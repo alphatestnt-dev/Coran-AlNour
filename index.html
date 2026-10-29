@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Al-Nour — Le Coran mot à mot</title>
+<style>
+:root{--green:#163c2a;--gold:#d9c58f;--paper:#fffdf7;--ink:#1d281f;--muted:#687066}
+*{box-sizing:border-box}body{margin:0;background:#f3f6ef;color:var(--ink);font-family:system-ui,-apple-system,sans-serif}
+body:before{content:"";position:fixed;inset:8px;pointer-events:none;z-index:9999;border:3px double #176b45;outline:1px solid #c6a45b;outline-offset:4px}
+header{padding:18px 12px 8px;text-align:center}header h1{margin:0;font-size:23px;color:#0d4932}header p{font-size:13px;color:var(--muted);margin:5px 0}
+main{max-width:1000px;margin:auto;padding:12px}.panel,.reader{background:var(--paper);border:1px solid #b8cfbf;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:inset 0 0 0 2px #edf4ed}
+.selector{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
+select,button{border:1px solid #176b45;border-radius:10px;padding:10px 12px;font:inherit;background:white;max-width:100%}button{background:#d9c58f;font-weight:700;cursor:pointer}
+.status{font-size:13px;color:#596657;line-height:1.5;margin:10px 0 0}.title{text-align:center;margin:4px 0 8px;color:#0d4932}
+.hint{text-align:center;color:var(--muted);font-size:13px;line-height:1.5}
+.ayah{border-top:1px solid #e2ded4;padding:18px 3px}.ayahnum{text-align:center;color:#657064;font-size:12px;margin-bottom:8px}.verse-translation{margin:12px auto 4px;max-width:760px;padding:12px 14px;background:#f4f5ed;border-left:3px solid #c6a45b;border-radius:8px;color:#354638;font-size:15px;line-height:1.7}.verse-translation-label{display:block;margin-bottom:4px;color:#7b6736;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.verse-translation p{margin:0}
+.ar{direction:rtl;text-align:justify;text-align-last:center;font-family:"Noto Naskh Arabic","Amiri","Traditional Arabic",serif;font-size:clamp(29px,5.2vw,39px);line-height:2.25;word-spacing:.28em}
+.word{display:inline-block;position:relative;margin:0 .035em;padding:0 .1em;border-radius:7px;cursor:pointer;vertical-align:baseline}
+.word:hover,.word.active,.word:focus{background:#efe1b4;outline:none}
+.pop{display:none;position:absolute;right:0;top:88%;z-index:20;min-width:180px;width:max-content;max-width:min(290px,78vw);background:#173d2a;color:#fff;border:1px solid #d9c58f;border-radius:10px;padding:9px 10px;box-shadow:0 5px 18px #0004;font:13px/1.45 system-ui,sans-serif;word-spacing:normal;text-align:left;direction:ltr;white-space:normal}
+.word.active .pop,.word:focus .pop,.word:hover .pop{display:block}.pop b{display:block;font-weight:750;color:#f5df9b;margin-bottom:3px}.pop .review-status{display:block;margin:7px 0;padding:5px 7px;border-radius:6px;font-size:11px;line-height:1.35;font-weight:700;background:#31483b;color:#f5f0d9}.pop .review-review{background:#674b2a;color:#fff0ce}.pop .review-glossary{background:#344d69;color:#e7f2ff}.pop .review-study{background:#3e5b3e;color:#e8f5df}.pop .review-entry{background:#31483b;color:#f5f0d9}
+.pop .context{display:block;border-top:1px solid #ffffff45;padding-top:5px;margin-top:5px}
+.pop .genealogy{display:block;margin-top:9px;padding-top:8px;border-top:1px solid #ffffff45}
+.pop .genealogy-title{display:block;color:#f5df9b;font-weight:800;font-size:11px;margin-bottom:6px}
+.pop .tree{display:grid;gap:5px;margin-left:3px}
+.pop .tree-node{position:relative;border-left:2px solid #d9c58f;padding:5px 7px 5px 10px;background:#ffffff0d;border-radius:0 6px 6px 0;font-size:11px;line-height:1.4}
+.pop .tree-node:before{content:"";position:absolute;left:-2px;top:0;width:7px;border-top:1px solid #d9c58f}
+.pop .tree-label{display:block;color:#c9d8cb;font-size:9px;text-transform:uppercase;letter-spacing:.04em;font-weight:800;margin-bottom:2px}
+.pop .tree-node strong{color:#fff3c9}
+.pop .tree-note{font-size:10px;color:#d4dfd4;margin-top:5px}
+
+.notice{background:#f4edda;border-radius:12px;padding:12px;line-height:1.5;font-size:14px}.loading{padding:18px;text-align:center;color:#596657}
+footer{font-size:12px;color:#657064;line-height:1.6;padding:10px 4px}footer a{color:#176b45}
+@media(max-width:560px){main{padding:9px}.selector{grid-template-columns:1fr}.ar{line-height:2.4}.pop{position:fixed;left:50%;right:auto;top:auto;bottom:18px;transform:translateX(-50%);width:min(330px,86vw);max-width:86vw;z-index:10001}}
+
+/* V14 — direction artistique raffinée, pensée pour mobile */
+:root{--green:#123d2e;--gold:#c5a45c;--paper:#fffdf8;--ink:#202c25;--muted:#65736a;--sage:#e8f0e8}
+body{background:radial-gradient(ellipse at top,#e4ede3 0,#f5f5ef 48%,#f1eee5 100%);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+body:before{inset:7px;border:1px solid #c5a45c;outline:1px solid #123d2e;outline-offset:4px;border-radius:5px}
+header{padding:30px 16px 22px;background:linear-gradient(160deg,#123d2e,#1c5740);color:#f9f5e8;position:relative;overflow:hidden}
+header:after{content:"۞";position:absolute;font-size:160px;right:-12px;top:-48px;color:#ffffff0b;pointer-events:none}
+.brandmark{font-size:27px;color:#dfc27d;margin-bottom:4px}.eyebrow,.mini-label{font-size:10px;letter-spacing:.2em;font-weight:800;color:#b99b55}.eyebrow{margin:0 0 6px}header h1{font-size:clamp(26px,5vw,37px);letter-spacing:.02em;color:#fff8e7;font-weight:650}header p{color:#e0e9df}header .subtitle{font-size:19px;font-weight:650;letter-spacing:.04em;margin:1px 0 4px;color:#e2c987}
+main{max-width:880px;padding:18px 14px 30px}.panel,.reader{background:rgba(255,253,248,.97);border:1px solid #d9e2d7;border-radius:20px;padding:clamp(15px,3vw,24px);margin-bottom:16px;box-shadow:0 10px 35px #173c2a0c,inset 0 0 0 1px #fff}
+.panel-intro h2{font-size:19px;color:var(--green);margin:5px 0}.panel-intro p{font-size:13px;color:var(--muted);margin:0 0 17px;line-height:1.5}
+.selector{gap:13px}label{font-size:12px;color:#3c5947;letter-spacing:.02em}select,button{border:1px solid #c5d5c8;border-radius:12px;padding:12px 13px;background:#fff;font-size:15px;min-height:46px}select{width:100%;color:#20392b}button{background:linear-gradient(135deg,#e9d7a5,#d6bc75);border-color:#c5a45c;color:#243b2d;box-shadow:0 3px 8px #123d2e10;transition:transform .15s ease,filter .15s ease}button:active{transform:scale(.98)}select:focus-visible,button:focus-visible{outline:3px solid #c5a45c;outline-offset:2px}
+.status{background:#f0f5ef;border-radius:10px;padding:10px 12px;color:#496653}.reader-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.ornament{color:#b99b55;letter-spacing:.15em}.title{font-size:clamp(22px,4vw,29px);font-weight:650;margin:8px 0;color:var(--green)}.hint{max-width:600px;margin:0 auto 12px;font-size:13px}
+.ayah{border-top:1px solid #e6e3d7;padding:23px 5px 20px;scroll-margin-top:12px}.ayahnum{display:table;margin:0 auto 12px;padding:4px 11px;background:#f1f4ec;border:1px solid #e0e6d9;border-radius:20px;color:#6b7b6b;font-size:11px}.ar{font-family:"Amiri","Noto Naskh Arabic","Traditional Arabic",serif;font-size:clamp(31px,6vw,43px);line-height:2.2;word-spacing:.34em;color:#202820;text-align:center;text-align-last:center}
+.word{margin:0 .045em;padding:0 .14em;border-radius:8px;transition:background .15s ease,color .15s ease}.word:hover,.word.active,.word:focus{background:#f0e3bd;color:#183d2c;outline:1px solid #d5bd7c}.pop{background:#153e2d;border:1px solid #d1b56b;border-radius:15px;padding:13px 14px;box-shadow:0 15px 38px #071c1370;font-size:13px;line-height:1.55;white-space:normal}.pop b{color:#f2d994;font-size:14px}.pop span{display:block;margin-top:4px}.pop .context{border-top:1px solid #ffffff35;margin-top:8px;padding-top:8px;color:#e8eee8}.pop .study-note{border-top:1px solid #ffffff35;margin-top:8px;padding-top:8px;color:#e8eee8}.pop .study-note strong{color:#f2d994;font-weight:750}
+.fatiha-lens{margin:10px 0 4px;padding:15px;background:linear-gradient(140deg,#f7f4e9,#eef4eb);border:1px solid #d8dfcc;border-radius:15px}.lens-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}.lens-head strong{color:#214b35;font-size:14px}.lens-tag{font-size:10px;letter-spacing:.06em;color:#6e795f}.lens-intro{font-size:12px;line-height:1.5;color:#647164;margin:0 0 10px}.lens-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}.lens-item{padding:10px 11px;border-radius:10px;background:#fffdf8;border:1px solid #e4e2d5;font-size:13px;line-height:1.5}.lens-item b{display:block;color:#a0823d;font-size:10px;letter-spacing:.08em;margin-bottom:3px}.lens-item p{margin:0;color:#27392e}.lens-toggle{font-size:12px;padding:8px 11px;min-height:36px;white-space:nowrap}
+.notice{background:#f8f1df;border:1px solid #e6d9b7;color:#514a36;border-radius:12px;padding:13px;line-height:1.55}footer{max-width:760px;margin:0 auto;text-align:center;padding:18px 8px 28px;color:#647267}footer strong{color:#274d36}footer p{line-height:1.65}footer a{color:#285b3e;font-weight:650}
+@media(max-width:560px){main{padding:12px 10px 25px}.selector{grid-template-columns:1fr}.ar{line-height:2.25}.pop{left:50%;right:auto;top:auto;bottom:18px;transform:translateX(-50%);width:min(340px,86vw);max-width:86vw}.lens-list{grid-template-columns:1fr}.lens-head{align-items:flex-start;flex-direction:column}.lens-toggle{width:100%}body:before{inset:5px;outline-offset:2px}}
+/* V25 : bulles volontairement courtes, compactes et lisibles */
+.pop{width:190px;min-width:0;max-width:min(190px,76vw);padding:7px 8px;border-radius:9px;font-size:11px;line-height:1.32;box-shadow:0 5px 16px #0004}
+.pop b{font-size:12px;margin-bottom:2px}
+.pop span{margin-top:3px}
+.pop .review-status{margin:4px 0;padding:3px 5px;font-size:9px;line-height:1.2}
+.pop .genealogy{margin-top:5px;padding-top:4px}
+.pop .genealogy-title{font-size:10px;margin-bottom:3px}
+.pop .tree{gap:3px;margin-left:2px}
+.pop .tree-node{padding:3px 5px 3px 7px;font-size:10px;line-height:1.25}
+.pop .tree-label{font-size:8px;margin-bottom:1px;letter-spacing:.02em}
+.pop .tree-note{display:none}
+.pop .study-note{display:none}
+.pop .context{font-size:10px;line-height:1.25;margin-top:4px;padding-top:4px;max-height:42px;overflow:auto}
+@media(max-width:560px){.pop{left:50%;right:auto;top:auto;bottom:12px;transform:translateX(-50%);width:min(190px,76vw);max-width:76vw;padding:7px 8px}.pop .context{max-height:36px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* V35 — lecture normale uniforme par défaut ; couleurs uniquement sur activation explicite */
+body:not(.tajwid-on) .ar .tj-char{color:inherit!important;text-decoration:none!important;background:transparent!important}
+body:not(.tajwid-on) .ar .tj-char::before,body:not(.tajwid-on) .ar .tj-char::after{content:none!important}
+/* V20 — option de repérage couleur pour la récitation ; désactivée par défaut */
+.tajwid-options{margin:12px 0 0;padding:12px;border:1px solid #d9e2d7;border-radius:14px;background:#f8faf5}
+.tajwid-choice{display:flex;align-items:center;gap:10px;font-weight:750;color:#234b36;font-size:14px;cursor:pointer}
+.tajwid-choice input{width:20px;height:20px;accent-color:#176b45}
+.tajwid-legend{display:none;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:12px;color:#34483a}
+body.tajwid-on .tajwid-legend{display:flex}
+.legend-item{display:inline-flex;align-items:center;gap:5px;background:white;border:1px solid #e1e6dc;border-radius:20px;padding:5px 9px}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.tajwid-on .tj-char{border-radius:2px}
+.tajwid-on .tj-madd{color:#c51e2a;text-decoration:underline;text-decoration-color:#c51e2a80;text-decoration-thickness:2px;text-underline-offset:3px}
+.tajwid-on .tj-ghunna{color:#16834b;text-decoration:underline wavy #16834b80;text-underline-offset:3px}
+.tajwid-on .tj-qalqalah{color:#4050c8;text-decoration:underline dotted #4050c880;text-underline-offset:3px}
+.tajwid-on .tj-silent{color:#92989a!important;text-decoration:line-through;text-decoration-color:#92989a;text-decoration-thickness:1.5px}
+.tajwid-on .tj-wasl-silent{color:#92989a!important;text-decoration:none!important}
+.tajwid-on .tj-ikhfa{color:#8a32a8;text-decoration:underline dotted #8a32a880;text-underline-offset:3px}
+.tajwid-on .tj-iqlab{color:#d97720;text-decoration:underline dotted #d9772080;text-underline-offset:3px}
+.tajwid-on .tj-possible{color:#a66b08;text-decoration:underline dotted #a66b08;text-underline-offset:3px}
+.tajwid-disclaimer{display:none;margin:9px 0 0;font-size:11px;line-height:1.5;color:#687066}
+body.tajwid-on .tajwid-disclaimer{display:block}
+
+
+/* V21 — onglet d’aide et glossaire de tajwīd */
+.help-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.help-tab{flex:1;min-width:140px;background:#fffdf7;border:1px solid #c9d8cb;color:#244b35;box-shadow:none}
+.help-tab[aria-selected="true"]{background:#174b34;color:#fff;border-color:#174b34}
+.help-panel{background:#fffdf7;border:1px solid #cbd9cc;border-radius:16px;padding:16px;margin-bottom:12px;line-height:1.65}
+.help-panel h2{margin:0 0 8px;color:#174b34;font-size:20px}
+.help-panel h3{margin:17px 0 6px;color:#315c40;font-size:16px}
+.help-panel p{margin:7px 0}
+.glossary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.glossary-item{background:#f5f7ef;border:1px solid #e0e5d8;border-radius:12px;padding:11px}
+.glossary-item strong{display:block;color:#244b35;margin-bottom:3px}
+.glossary-item p{margin:0;font-size:13px}
+.help-note{padding:11px 12px;background:#f8f1df;border-left:3px solid #c5a45c;border-radius:8px;font-size:13px}
+@media(max-width:560px){.glossary{grid-template-columns:1fr}.help-tab{min-width:100px}}
+
+.example-ar{font-family:"Noto Naskh Arabic","Amiri","Traditional Arabic",serif;font-size:1.55rem;text-align:center;line-height:1.9;margin:8px 0;color:#173e2c}
+
+/* Bloc de soutien solidaire — don direct à l'organisme partenaire */
+.support-card{max-width:960px;margin:14px auto 8px;padding:15px 18px;border:1px solid #d8c69a;border-radius:16px;background:linear-gradient(135deg,#fffdf5,#f4f8f1);box-shadow:0 4px 18px #153b2610;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.support-card h2{font-size:17px;margin:0 0 5px;color:#174a34}
+.support-card p{font-size:13px;line-height:1.5;margin:4px 0;color:#465348}
+.support-card .support-note{font-size:11px;color:#657064}
+.support-link{display:inline-flex;align-items:center;justify-content:center;background:#176b45;color:#fff;text-decoration:none;border-radius:10px;padding:11px 14px;font-weight:700;font-size:13px;white-space:nowrap}
+.support-link:focus-visible{outline:3px solid #c6a45b;outline-offset:3px}
+@media(max-width:620px){.support-card{grid-template-columns:1fr;margin:12px 10px}.support-link{width:100%;white-space:normal}}
+</style></head><body>
+<header><div class="brandmark" aria-hidden="true">۞</div><p class="eyebrow">ÉTUDE • LANGUE • CONTEMPLATION</p><h1>النُّور · Al-Nour</h1><p class="subtitle">Le Coran mot à mot</p><p>Approcher chaque mot arabe avec douceur, précision et respect · Version web préparatoire : lecture normale uniforme et code couleur tajwīd optionnel.</p></header>
+<section class="support-card" aria-labelledby="supportTitle">
+  <div>
+    <h2 id="supportTitle">🤍 Une sadaqa pour l’accès à l’eau à Gaza</h2>
+    <p>Si vous le souhaitez, vous pouvez soutenir librement l’aide à l’eau potable en Palestine. Le lien mène directement au fonds eau potable de Human Appeal France ; votre don est effectué auprès de cet organisme, et non collecté par l’application Al-Nour.</p>
+    <p class="support-note">Le projet présenté par l’organisme concerne notamment la distribution d’eau potable et le dessalement à Gaza. Il ne s’agit pas d’une promesse de financement spécifique d’un puits. Vérifiez les modalités et le montant proposés sur le site officiel avant de donner.</p>
+  </div>
+  <a class="support-link" href="https://humanappeal.fr/faire-un-don/projets/eau-potable/eau-potable-gaza" target="_blank" rel="noopener noreferrer">Soutenir l’eau potable à Gaza ↗</a>
+</section>
+<main>
+
+<div class="help-tabs" role="tablist" aria-label="Navigation Al Nour">
+<button class="help-tab" id="tabLecture" type="button" role="tab" aria-selected="true" aria-controls="lectureArea">📖 Lecture du Coran</button>
+<button class="help-tab" id="tabHelp" type="button" role="tab" aria-selected="false" aria-controls="helpArea">❔ Aide à la lecture & tajwīd</button>
+</div>
+<div id="lectureArea" role="tabpanel" aria-labelledby="tabLecture">
+
+<section class="panel"><div class="panel-intro"><span class="mini-label">VOTRE LECTURE</span><h2>Choisissez votre sourate</h2><p>Les mots arabes restent au premier plan. La traduction française complète de Muhammad Hamidullah accompagne chaque verset. Touchez un mot pour explorer son sens.</p><p class="status" role="note">Les bulles mot à mot sont des gloses de travail, alimentées en partie par des données lexicales anglaises. Elles ne constituent pas une traduction française certifiée de chaque mot.</p></div><div class="selector"><div><label for="surah">Choisir une sourate</label><select id="surah"></select></div><div><label for="jump">Aller au verset</label><select id="jump"></select></div></div><p id="status" class="status" aria-live="polite">Préparation du texte…</p>
+<div class="tajwid-options">
+<label class="tajwid-choice" for="tajwidToggle"><input id="tajwidToggle" type="checkbox"> Lecture normale — couleur uniforme ; activer le code couleur tajwīd si souhaité</label>
+<div class="tajwid-legend" aria-label="Légende du code couleur">
+<span class="legend-item"><i class="legend-dot" style="background:#c51e2a"></i> Rouge : allongement (madd)</span>
+<span class="legend-item"><i class="legend-dot" style="background:#16834b"></i> Vert : nasalisation (ghunna)</span>
+<span class="legend-item"><i class="legend-dot" style="background:#4050c8"></i> Bleu : qalqalah</span>
+<span class="legend-item"><i class="legend-dot" style="background:#92989a"></i> Gris barré : lettre écrite non prononcée en liaison</span>
+<span class="legend-item"><i class="legend-dot" style="background:#8a32a8"></i> Violet : ikhfāʾ possible</span>
+<span class="legend-item"><i class="legend-dot" style="background:#d97720"></i> Orange : iqlāb possible</span>
+</div>
+<p class="tajwid-disclaimer">La lecture normale affiche les mots dans une couleur uniforme. Le code couleur tajwīd est facultatif et son repérage reste pédagogique et partiel pour la lecture de Ḥafṣ ʿan ʿĀṣim. Les règles dépendant des mots voisins, de la liaison et de l’arrêt doivent être vérifiées dans leur contexte.</p>
+</div></section>
+<section class="reader"><div class="reader-top"><span class="mini-label">LECTURE CORANIQUE</span><span class="ornament">✦ ۞ ✦</span></div><h2 id="surahTitle" class="title">الفاتحة — Al-Fātiḥa</h2><p class="hint">Touchez un mot pour découvrir son sens lexical, sa translittération et son rôle dans le verset. Sur Al-Fātiḥa, ouvrez aussi les sept éclairages français.</p><div id="verses"><div class="loading">Chargement du texte coranique et de sa traduction française…</div></div><div id="error" class="notice" hidden></div></section>
+</div>
+<section id="helpArea" class="help-panel" role="tabpanel" aria-labelledby="tabHelp" hidden>
+<h2>Aide à la lecture et glossaire du tajwīd</h2>
+<p>Par défaut, toutes les lettres sont affichées dans la couleur normale uniforme, sans gris ni autres couleurs de tajwīd. Cochez uniquement si vous souhaitez activer le repérage couleur ; décochez pour revenir à la lecture normale.</p>
+
+<h3>Notre méthode de traduction : du sens brut au sens dans le verset</h3>
+<p>Al-Nour distingue volontairement ce que le mot porte en lui, ce que sa forme grammaticale ajoute et ce que le contexte permet de traduire. Une racine n’impose pas à elle seule le sens d’un mot : la forme, la syntaxe et l’usage comptent aussi.</p>
+<div class="glossary">
+<div class="glossary-item"><strong>1 · Forme coranique</strong><p>Conserver le mot tel qu’il apparaît, avec ses voyelles et signes. Ne pas effacer une différence de forme pour obtenir une traduction plus simple.</p></div>
+<div class="glossary-item"><strong>2 · Racine attestée</strong><p>Identifier les consonnes radicales à l’aide d’une analyse morphologique. Si la racine n’est pas vérifiée, l’afficher comme incertaine plutôt que de la deviner.</p></div>
+<div class="glossary-item"><strong>3 · Sens lexical de base</strong><p>Présenter un noyau de sens et, si nécessaire, plusieurs sens attestés. Ne pas confondre l’étymologie supposée avec le sens réel du mot dans l’arabe coranique.</p></div>
+<div class="glossary-item"><strong>4 · Grammaire et attaches</strong><p>Analyser les préfixes, suffixes, nombre, genre, temps, cas et fonction dans la phrase. Un suffixe pronominal peut modifier la relation entre les mots.</p></div>
+<div class="glossary-item"><strong>5 · Sens activé par le contexte</strong><p>Comparer la syntaxe, les mots voisins, le passage et les emplois coraniques comparables. Le contexte précise le sens ; il ne justifie pas d’ajouter arbitrairement une idée absente du texte.</p></div>
+<div class="glossary-item"><strong>6 · Proposition française d’Al-Nour</strong><p>Choisir la formulation française qui conserve le plus d’éléments du sens arabe. Signaler les nuances perdues et les alternatives possibles. Il s’agit d’une proposition de travail, à réviser lorsqu’une analyse meilleure est établie.</p></div>
+</div>
+<h3>Exemple de raisonnement : قَبْلِكَ</h3>
+<div class="glossary">
+<div class="glossary-item"><strong>Forme</strong><p class="example-ar" lang="ar" dir="rtl">قَبْلِكَ</p><p>La forme inclut un nom/adverbe de relation temporelle et un suffixe pronominal.</p></div>
+<div class="glossary-item"><strong>Décomposition proposée</strong><p><span lang="ar" dir="rtl">قَبْلِ</span> — « avant » ; <span lang="ar" dir="rtl">ـكَ</span> — « toi / ton », selon sa fonction.</p></div>
+<div class="glossary-item"><strong>Rendu littéral</strong><p>« avant toi ».</p></div>
+<div class="glossary-item"><strong>Rendu dans le verset</strong><p>Il faut lire le verset complet pour confirmer la relation exprimée et choisir entre une formulation littérale et une tournure française naturelle. Sans ce contexte, on ne prétend pas fixer une traduction définitive.</p></div>
+</div>
+<p class="help-note"><strong>Engagement éditorial :</strong> les traductions françaises chargées par le service externe servent actuellement à afficher le sens du verset et à fournir un point de comparaison ; elles ne doivent pas être présentées comme une traduction originale d’Al-Nour. Le travail indépendant doit être construit progressivement, avec des analyses sourcées, des exemples vérifiables et un statut de confiance explicite. Les références reconnues servent à contrôler les faits linguistiques et à comparer les interprétations, pas à recopier leurs formulations.</p>
+
+<h3>Comprendre le code couleur</h3>
+<div class="glossary">
+<div class="glossary-item"><strong><span style="color:#c51e2a">Rouge — Madd</span></strong><p>Allongement d’une voyelle : naturel généralement 2 temps ; d’autres madd peuvent être de 4–5 ou 6 temps selon la cause, la liaison et la voie de lecture. Le code colore les indices repérés, pas une mesure audio certifiée.</p></div>
+<div class="glossary-item"><strong><span style="color:#16834b">Vert — Ghunna</span></strong><p>Nasalisation : le son résonne dans le nez, notamment avec نّ et مّ et dans certaines règles d’ikhfāʾ, d’iqlāb et d’idghām. Le repérage automatique ne couvre pas chaque cas contextuel.</p></div>
+<div class="glossary-item"><strong><span style="color:#4050c8">Bleu — Qalqalah</span></strong><p>Léger rebond sonore sur ق ط ب ج د lorsqu’une de ces lettres est sākinah ; la force varie notamment selon qu’on s’arrête ou non.</p></div>
+<div class="glossary-item"><strong><span style="color:#92989a">Gris barré — Non prononcé en liaison</span></strong><p>Repère la hamzat al-waṣl initiale lorsqu’on enchaîne depuis le mot précédent. Dans ٱللَّهِ, seule cette hamza de liaison est omise ; le reste du nom Allah se prononce. Le lām solaire de l’article est un cas distinct. Si l’on commence la lecture au mot, la hamzat al-waṣl se prononce. Les signes et lettres muets varient selon le contexte.</p></div><div class="glossary-item"><strong><span style="color:#8a32a8">Violet — Ikhfāʾ indicatif</span></strong><p>Le nūn sākinah ou tanwīn se prononce de façon dissimulée avec nasalisation devant l’une des 15 lettres de l’ikhfāʾ. Le repérage proposé reste partiel.</p></div><div class="glossary-item"><strong><span style="color:#d97720">Orange — Iqlāb indicatif</span></strong><p>Devant ب, le son du nūn sākinah ou du tanwīn se transforme en un son proche de mīm avec ghunna. L’application ne confirme pas encore tous les cas.</p></div>
+</div>
+<h3>Exemples tirés du Coran</h3>
+<p>Ces exemples illustrent une règle dans son contexte. La prononciation exacte dépend de la lecture suivie (riwāya) et du fait de continuer ou de s’arrêter. Les extraits ci-dessous suivent la lecture courante de Ḥafṣ ʿan ʿĀṣim.</p>
+<div class="glossary">
+<div class="glossary-item"><strong><span style="color:#1672c4">Madd — allongement naturel</span></strong><p class="example-ar" lang="ar" dir="rtl">قَالَ رَبُّكَ</p><p><strong>Référence :</strong> Al-Baqara, 2:30 (extrait). Dans قَالَ, l’alif après la fatḥah porte l’allongement naturel, généralement de deux temps dans cette lecture.</p></div>
+<div class="glossary-item"><strong><span style="color:#16834b">Ghunna — nasalisation</span></strong><p class="example-ar" lang="ar" dir="rtl">إِنَّا أَعْطَيْنَاكَ</p><p><strong>Référence :</strong> Al-Kawthar, 108:1. Le nūn portant une shaddah (نّ) se récite avec nasalisation.</p></div>
+<div class="glossary-item"><strong><span style="color:#c13e36">Qalqalah à l’arrêt</span></strong><p class="example-ar" lang="ar" dir="rtl">أَحَدٌ</p><p><strong>Référence :</strong> Al-Ikhlāṣ, 112:1. Si le lecteur s’arrête sur أَحَدٌ, le dāl final devient sans voyelle audible et produit une qalqalah. En liaison, la réalisation est différente.</p></div>
+<div class="glossary-item"><strong>Ikhfāʾ — dissimulation avec nasalisation</strong><p class="example-ar" lang="ar" dir="rtl">مِن شَرِّ</p><p><strong>Référence :</strong> Al-Falaq, 113:2. Le nūn sākinah de مِنْ est suivi de ش, l’une des lettres de l’ikhfāʾ.</p></div>
+<div class="glossary-item"><strong>Iqlāb — transformation devant ب</strong><p class="example-ar" lang="ar" dir="rtl">مِن بَعْدِ</p><p><strong>Référence :</strong> Al-Baqara, 2:27 (extrait). Le nūn sākinah est suivi de ب ; le son se réalise comme un mīm dissimulé avec nasalisation, selon la règle.</p></div>
+<div class="glossary-item"><strong>Idghām avec nasalisation</strong><p class="example-ar" lang="ar" dir="rtl">وَمَن يَعْمَلْ</p><p><strong>Référence :</strong> An-Nisāʾ, 4:124 (extrait). Le nūn final de مَن est suivi de ي : il s’assimile selon la règle d’idghām avec ghunna.</p></div>
+<div class="glossary-item"><strong>Iẓhār — prononciation claire</strong><p class="example-ar" lang="ar" dir="rtl">مِنْ هَادٍ</p><p><strong>Référence :</strong> Ar-Raʿd, 13:33 (extrait). Le nūn sākinah est suivi de ه, une lettre gutturale : le nūn se prononce clairement.</p></div>
+</div>
+<h3>Lire les couleurs sur des exemples réels</h3>
+<div class="glossary">
+<div class="glossary-item"><strong>Al-Fātiḥa 1:1 — allongement</strong><p class="example-ar" lang="ar" dir="rtl">الرَّحْمَٰنِ الرَّحِيمِ</p><p>Les signes d’allongement dans الرَّحْمَٰنِ et الرَّحِيمِ correspondent à des madd naturels dans cette lecture : généralement deux temps, sauf si une autre cause modifie la durée à l’arrêt ou en liaison.</p></div>
+<div class="glossary-item"><strong>Al-Fātiḥa 1:7 — prononciation claire</strong><p class="example-ar" lang="ar" dir="rtl">أَنْعَمْتَ</p><p>Le nūn sākinah est suivi de ع, une lettre de gorge : c’est iẓhār, le nūn se prononce clairement. Ce n’est donc pas une ghunna d’ikhfāʾ.</p></div>
+<div class="glossary-item"><strong>Al-Ikhlāṣ 112:1 — arrêt</strong><p class="example-ar" lang="ar" dir="rtl">أَحَدٌ</p><p>À l’arrêt sur أَحَدٌ, le dāl devient sākin et présente une qalqalah. En liaison, la terminaison ne se réalise pas de la même manière.</p></div>
+<div class="glossary-item"><strong>Al-Fajr 89:1 — hamzat al-waṣl</strong><p class="example-ar" lang="ar" dir="rtl">وَالْفَجْرِ</p><p>Enchaîné depuis وَ, l’alif de liaison n’est pas prononcé séparément. Le lām de l’article est, lui, prononcé ici car ف est une lettre lunaire : ne pas le griser comme un lām solaire.</p></div>
+<div class="glossary-item"><strong>Al-Ḍuḥā 93:1 — lām solaire</strong><p class="example-ar" lang="ar" dir="rtl">وَالضُّحَىٰ</p><p>Le lām de l’article s’assimile à ض : le lām est écrit mais ne s’entend pas comme un lām indépendant ; la lettre solaire est renforcée.</p></div>
+<div class="glossary-item"><strong>Al-Baqara 2:19 — iqlāb</strong><p class="example-ar" lang="ar" dir="rtl">مِنۢ بَعْدِ</p><p>Le nūn sākinah devant ب se transforme en un son proche du mīm, avec nasalisation. L’annotation dépend du mot précédent, elle ne peut pas être déterminée sur ب isolé.</p></div>
+</div>
+<p class="help-note"><strong>À retenir :</strong> un code couleur n’est pas universel. Certains muṣḥaf utilisent rouge pour le madd et vert pour la ghunna ; d’autres mettent rouge sur la ghunna, vert sur les lettres emphatiques et bleu sur la qalqalah. Al-Nour affiche sa propre légende à côté du texte. Le gris est réservé aux lettres réellement non prononcées dans le contexte. Pour ٱللَّهِ en liaison, seule la hamzat al-waṣl initiale (ٱ) n’est pas prononcée : le nom Allah reste prononcé. Le lām solaire de l’article est un autre cas.</p>
+<h3>Comment s’exercer avec les exemples</h3>
+<ol><li>Lisez d’abord l’extrait sans regarder la couleur.</li><li>Repérez la lettre ou le signe qui déclenche la règle.</li><li>Relisez en écoutant une récitation fiable de la même lecture.</li><li>En cas de doute, gardez la couleur comme aide visuelle seulement : elle ne certifie pas à elle seule la règle.</li></ol>
+<h3>Les bases pour bien lire</h3>
+<div class="glossary">
+<div class="glossary-item"><strong>Tajwīd (تجويد)</strong><p>Ensemble des règles et des pratiques qui aident à réciter le Coran correctement, en respectant les lettres, leurs caractéristiques et les règles de liaison.</p></div>
+<div class="glossary-item"><strong>Makharij al-ḥurūf (مخارج الحروف)</strong><p>Points d’articulation : endroits de la bouche, de la gorge ou des lèvres d’où les lettres sont prononcées.</p></div>
+<div class="glossary-item"><strong>Ṣifāt al-ḥurūf (صفات الحروف)</strong><p>Caractéristiques des lettres, par exemple la force, la douceur ou la manière dont l’air circule pendant leur prononciation.</p></div>
+<div class="glossary-item"><strong>Sukūn ( ْ )</strong><p>Signe indiquant qu’une consonne n’est pas suivie d’une voyelle brève. Il peut influencer certaines règles de récitation.</p></div>
+<div class="glossary-item"><strong>Shaddah ( ّ )</strong><p>Signe de consonne doublée : la lettre est tenue comme une consonne renforcée. Avec نّ ou مّ, une nasalisation est généralement requise.</p></div>
+<div class="glossary-item"><strong>Tanwīn ( ً ٍ ٌ )</strong><p>Double voyelle finale qui produit un son « n » dans la lecture et déclenche des règles différentes selon la lettre suivante.</p></div>
+<div class="glossary-item"><strong>Nūn sākinah (نْ)</strong><p>Lettre nūn portant un sukūn. Sa lecture dépend notamment de la lettre qui suit : iẓhār, idghām, iqlāb ou ikhfāʾ.</p></div>
+<div class="glossary-item"><strong>Mīm sākinah (مْ)</strong><p>Lettre mīm portant un sukūn. Elle a des règles de liaison particulières, notamment devant ب, م ou d’autres lettres.</p></div>
+<div class="glossary-item"><strong>Iẓhār (إظهار)</strong><p>Prononciation claire de la lettre, sans l’assimiler à la lettre suivante.</p></div>
+<div class="glossary-item"><strong>Idghām (إدغام)</strong><p>Assimilation d’une lettre à la suivante selon des conditions précises ; la manière de la réaliser varie selon la règle.</p></div>
+<div class="glossary-item"><strong>Iqlāb (إقلاب)</strong><p>Transformation du son du nūn sākinah ou du tanwīn en un son proche du mīm devant ب, avec nasalisation.</p></div>
+<div class="glossary-item"><strong>Ikhfāʾ (إخفاء)</strong><p>Prononciation intermédiaire : le nūn sākinah ou le tanwīn est dissimulé partiellement avec nasalisation, selon la lettre suivante.</p></div>
+<div class="glossary-item"><strong>Waqf (وقف)</strong><p>Pause à la fin d’un passage. La pause peut modifier la manière de prononcer la dernière voyelle ou certaines lettres.</p></div>
+<div class="glossary-item"><strong>Waṣl (وصل)</strong><p>Lecture en continu, sans pause entre les mots ou les passages concernés.</p></div>
+<div class="glossary-item"><strong>Ḥarakāt (حركات)</strong><p>Voyelles brèves : fatḥah (َ), kasrah (ِ) et ḍammah (ُ). Elles indiquent notamment le son « a », « i » ou « ou » bref.</p></div>
+<div class="glossary-item"><strong>Madd ṭabīʿī (مد طبيعي)</strong><p>Allongement naturel de base, généralement de deux temps, lorsque les conditions de cette règle sont réunies.</p></div>
+</div>
+<h3>Comment utiliser l’application</h3>
+<ol><li>Choisissez une sourate et un verset dans l’onglet Lecture.</li><li>Activez « Code couleur de lecture » uniquement si vous le souhaitez.</li><li>Consultez la légende pour comprendre les repères colorés.</li><li>Touchez un mot arabe pour voir sa translittération, son sens proposé et, lorsqu’elle est disponible, une note de grammaire.</li></ol>
+<p class="help-note"><strong>Important :</strong> les couleurs actuelles sont des repères automatiques partiels, pas une annotation certifiée de toutes les règles de tajwīd. Les règles dépendent souvent des mots voisins, des signes de récitation, de la liaison et de la pause. Pour apprendre à réciter, écoutez une récitation fiable et faites vérifier votre lecture par une personne qualifiée.</p>
+<p>Le texte arabe reste inchangé. Cette aide est pédagogique et ne remplace ni l’enseignement oral ni les ouvrages spécialisés.</p>
+</section>
+
+<footer><strong>Une lecture attentive : le sens se vérifie dans son contexte.</strong><p>Le texte arabe et la traduction française des versets sont chargés en ligne. Chaque mot reçoit une indication française de travail lorsque la donnée le permet ; les sens provisoires sont explicitement signalés et doivent être contrôlés avec la morphologie, la grammaire arabe et le contexte. La traduction complète du verset sert de repère contextuel, sans prétendre donner à elle seule l’équivalent exact de chaque mot. Les formes composées et suffixées peuvent changer de nuance ; lorsqu’un sens n’est pas établi, l’application doit le signaler plutôt que le présenter comme certain. Les sept éclairages de la Fātiḥa sont des reformulations originales de travail, non des traductions publiées ni des avis religieux.</p><a href="https://quran.com" target="_blank" rel="noreferrer">Texte coranique · Quran.com</a> <span>·</span> <a href="https://corpus.quran.com/wordbyword.jsp" target="_blank" rel="noreferrer">Morphologie et grammaire</a><p class="source-note">Contrôle des racines : référence de travail, le Quranic Arabic Corpus (Leeds) et le jeu de données quran-morphology. Les racines sont rapprochées d’un lexique de travail ; les formes non couvertes restent « à vérifier ». Les racines sont chargées en ligne sourate par sourate depuis un jeu de données fondé sur le Quranic Arabic Corpus, puis rapprochées des mots affichés. Si cette source est indisponible, le lexique local sert de secours. Une source morphologique aide à contrôler les racines, mais ne garantit pas à elle seule l’interprétation française de chaque occurrence. Références : https://corpus.quran.com/wordbyword.jsp · https://github.com/R3GENESI5/quran-bil-quran</p></footer>
+</main>
+<script>
+
+function setMainTab(showHelp){
+ const lecture=document.getElementById("lectureArea"), help=document.getElementById("helpArea");
+ const tabLecture=document.getElementById("tabLecture"), tabHelp=document.getElementById("tabHelp");
+ lecture.hidden=!!showHelp; help.hidden=!showHelp;
+ tabLecture.setAttribute("aria-selected",String(!showHelp)); tabHelp.setAttribute("aria-selected",String(!!showHelp));
+}
+document.getElementById("tabLecture").addEventListener("click",()=>setMainTab(false));
+document.getElementById("tabHelp").addEventListener("click",()=>setMainTab(true));
+
+const surahs = [
+["Al-Fātiḥa","الفاتحة",7],["Al-Baqara","البقرة",286],["Āl ʿImrān","آل عمران",200],["An-Nisāʾ","النساء",176],["Al-Māʾida","المائدة",120],["Al-Anʿām","الأنعام",165],["Al-Aʿrāf","الأعراف",206],["Al-Anfāl","الأنفال",75],["At-Tawba","التوبة",129],["Yūnus","يونس",109],["Hūd","هود",123],["Yūsuf","يوسف",111],["Ar-Raʿd","الرعد",43],["Ibrāhīm","إبراهيم",52],["Al-Ḥijr","الحجر",99],["An-Naḥl","النحل",128],["Al-Isrāʾ","الإسراء",111],["Al-Kahf","الكهف",110],["Maryam","مريم",98],["Ṭā-Hā","طه",135],["Al-Anbiyāʾ","الأنبياء",112],["Al-Ḥajj","الحج",78],["Al-Muʾminūn","المؤمنون",118],["An-Nūr","النور",64],["Al-Furqān","الفرقان",77],["Ash-Shuʿarāʾ","الشعراء",227],["An-Naml","النمل",93],["Al-Qaṣaṣ","القصص",88],["Al-ʿAnkabūt","العنكبوت",69],["Ar-Rūm","الروم",60],["Luqmān","لقمان",34],["As-Sajda","السجدة",30],["Al-Aḥzāb","الأحزاب",73],["Sabaʾ","سبأ",54],["Fāṭir","فاطر",45],["Yā-Sīn","يس",83],["Aṣ-Ṣāffāt","الصافات",182],["Ṣād","ص",88],["Az-Zumar","الزمر",75],["Ghāfir","غافر",85],["Fuṣṣilat","فصلت",54],["Ash-Shūrā","الشورى",53],["Az-Zukhruf","الزخرف",89],["Ad-Dukhān","الدخان",59],["Al-Jāthiya","الجاثية",37],["Al-Aḥqāf","الأحقاف",35],["Muḥammad","محمد",38],["Al-Fatḥ","الفتح",29],["Al-Ḥujurāt","الحجرات",18],["Qāf","ق",45],["Adh-Dhāriyāt","الذاريات",60],["Aṭ-Ṭūr","الطور",49],["An-Najm","النجم",62],["Al-Qamar","القمر",55],["Ar-Raḥmān","الرحمن",78],["Al-Wāqiʿa","الواقعة",96],["Al-Ḥadīd","الحديد",29],["Al-Mujādila","المجادلة",22],["Al-Ḥashr","الحشر",24],["Al-Mumtaḥana","الممتحنة",13],["Aṣ-Ṣaff","الصف",14],["Al-Jumuʿa","الجمعة",11],["Al-Munāfiqūn","المنافقون",11],["At-Taghābun","التغابن",18],["Aṭ-Ṭalāq","الطلاق",12],["At-Taḥrīm","التحريم",12],["Al-Mulk","الملك",30],["Al-Qalam","القلم",52],["Al-Ḥāqqa","الحاقة",52],["Al-Maʿārij","المعارج",44],["Nūḥ","نوح",28],["Al-Jinn","الجن",28],["Al-Muzzammil","المزمل",20],["Al-Muddaththir","المدثر",56],["Al-Qiyāma","القيامة",40],["Al-Insān","الإنسان",31],["Al-Mursalāt","المرسلات",50],["An-Nabaʾ","النبأ",40],["An-Nāziʿāt","النازعات",46],["ʿAbasa","عبس",42],["At-Takwīr","التكوير",29],["Al-Infiṭār","الانفطار",19],["Al-Muṭaffifīn","المطففين",36],["Al-Inshiqāq","الانشقاق",25],["Al-Burūj","البروج",22],["Aṭ-Ṭāriq","الطارق",17],["Al-Aʿlā","الأعلى",19],["Al-Ghāshiya","الغاشية",26],["Al-Fajr","الفجر",30],["Al-Balad","البلد",20],["Ash-Shams","الشمس",15],["Al-Layl","الليل",21],["Aḍ-Ḍuḥā","الضحى",11],["Ash-Sharḥ","الشرح",8],["At-Tīn","التين",8],["Al-ʿAlaq","العلق",19],["Al-Qadr","القدر",5],["Al-Bayyina","البينة",8],["Az-Zalzala","الزلزلة",8],["Al-ʿĀdiyāt","العاديات",11],["Al-Qāriʿa","القارعة",11],["At-Takāthur","التكاثر",8],["Al-ʿAṣr","العصر",3],["Al-Humaza","الهمزة",9],["Al-Fīl","الفيل",5],["Quraysh","قريش",4],["Al-Māʿūn","الماعون",7],["Al-Kawthar","الكوثر",3],["Al-Kāfirūn","الكافرون",6],["An-Naṣr","النصر",3],["Al-Masad","المسد",5],["Al-Ikhlāṣ","الإخلاص",4],["Al-Falaq","الفلق",5],["An-Nās","الناس",6]
+];
+
+const $=id=>document.getElementById(id);
+// Glossaire français de travail pour les mots fréquents ; les nuances dépendent du verset et les formes non couvertes doivent être vérifiées dans une source grammaticale.
+const frGloss = {
+ // Couverture lexicale élargie : traductions françaises de travail des gloses anglaises fréquentes.
+ 'the':'le / la / les','a':'un / une','an':'un / une','of':'de / du / des','to':'à / vers','in':'dans / en','on':'sur','by':'par','for':'pour','from':'de / depuis','with':'avec','without':'sans','and':'et','or':'ou','but':'mais','then':'alors / puis','so':'ainsi / donc','as':'comme / en tant que','that':'que / cela','this':'ceci / ce','these':'ceux-ci / ces','those':'ceux-là / ces','who':'qui','whom':'que / qui','whose':'dont','which':'qui / lequel','what':'ce que / quoi','when':'quand / lorsque','where':'où','why':'pourquoi','how':'comment','if':'si','not':'ne… pas','no':'non / aucun','yes':'oui','indeed':'certes / en vérité','surely':'assurément','certainly':'certainement','only':'seulement / ne… que','also':'aussi','even':'même','all':'tout / tous','every':'chaque','each':'chacun','any':'tout / n’importe quel','some':'certains / quelques','many':'nombreux / beaucoup','much':'beaucoup','more':'plus','most':'la plupart / le plus','less':'moins','few':'peu de','other':'autre','another':'un autre','same':'même','own':'propre','one':'un / une','two':'deux','three':'trois','first':'premier','last':'dernier','before':'avant','after':'après','above':'au-dessus','below':'en dessous','between':'entre','among':'parmi','near':'près','far':'loin','here':'ici','there':'là','now':'maintenant','today':'aujourd’hui','always':'toujours','never':'jamais','again':'encore / de nouveau','already':'déjà','still':'encore / toujours','until':'jusqu’à','while':'tandis que / pendant que','because':'parce que','therefore':'donc / par conséquent','thus':'ainsi','however':'cependant','except':'sauf / excepté','unless':'à moins que','rather':'plutôt','against':'contre','toward':'vers','upon':'sur / à','within':'à l’intérieur de','through':'à travers / par','about':'au sujet de / environ','like':'comme','such':'tel / pareil','be':'être','is':'est','are':'sont','am':'suis','was':'était / fut','were':'étaient / furent','been':'été','being':'étant','have':'avoir','has':'a / possède','had':'avait / eut','do':'faire','does':'fait','did':'a fait / fit','will':'marque du futur','would':'conditionnel / voudrait','shall':'marque du futur','should':'devrait','can':'pouvoir','could':'pouvait / pourrait','may':'peut / il se peut','might':'pourrait','must':'devoir / il faut','say':'dire','says':'dit','said':'a dit / dit','saying':'disant','speak':'parler','spoke':'parla / a parlé','tell':'dire / raconter','told':'a dit / raconta','call':'appeler','called':'appelé','ask':'demander','asked':'a demandé','answer':'répondre / réponse','reply':'répondre','know':'savoir / connaître','knows':'sait / connaît','knew':'savait / connaissait','known':'connu','think':'penser','thought':'pensée / a pensé','understand':'comprendre','understood':'a compris','hear':'entendre','heard':'a entendu','listen':'écouter','see':'voir','sees':'voit','saw':'a vu','seen':'vu','look':'regarder','watch':'observer','show':'montrer','find':'trouver','found':'a trouvé','come':'venir','comes':'vient','came':'est venu','go':'aller','goes':'va','went':'est allé','return':'revenir / retourner','return':'revenir / retourner','enter':'entrer','entered':'est entré','leave':'quitter / laisser','left':'a quitté / laissé','bring':'apporter','brought':'a apporté','send':'envoyer','sent':'a envoyé','give':'donner','gives':'donne','gave':'a donné','given':'donné','take':'prendre','takes':'prend','took':'a pris','made':'a fait / a rendu','make':'faire / rendre','put':'mettre','set':'placer / établir','keep':'garder','kept':'a gardé','hold':'tenir','held':'a tenu','follow':'suivre','followed':'a suivi','lead':'conduire / guider','led':'a conduit / guidé','guide':'guider / guidance','guided':'guidé','teach':'enseigner','taught':'a enseigné','learn':'apprendre','read':'lire','write':'écrire','written':'écrit','create':'créer','created':'a créé','form':'former / forme','formed':'a formé','begin':'commencer','began':'a commencé','start':'commencer','finish':'achever','end':'fin / terminer','live':'vivre','lived':'a vécu','die':'mourir','died':'est mort','give life':'donner la vie','raise':'relever / ressusciter','raised':'a relevé / ressuscité','resurrect':'ressusciter','returning':'retour / revenant','worship':'adorer / vouer un culte','pray':'prier','prayer':'prière','fast':'jeûner / jeûne','repent':'se repentir','forgive':'pardonner','forgiven':'pardonné','forgives':'pardonne','forgiveness':'pardon','believe':'croire','believes':'croit','believed':'a cru','believers':'croyants','faith':'foi','disbelieve':'rejeter la foi / ne pas croire','deny':'nier / rejeter','denied':'a nié / rejeté','reject':'rejeter','rejects':'rejette','rejected':'a rejeté','associate':'associer','witness':'témoigner / témoin','testify':'témoigner','promise':'promettre / promesse','promised':'a promis','fulfill':'accomplir / remplir','remember':'se souvenir / rappeler','remembrance':'rappel / souvenir','forget':'oublier','forgot':'a oublié','thank':'remercier','thanks':'remerciements','praise':'louer / louange','glorify':'glorifier','bless':'bénir','blessed':'béni','love':'aimer / amour','hate':'détester / haine','fear':'craindre / crainte','hope':'espérer / espoir','despair':'désespérer','trust':'faire confiance / confiance','rely':'s’en remettre à','seek':'chercher','seek refuge':'chercher refuge','ask forgiveness':'demander pardon','repentance':'repentir','help':'aider / aide','aid':'aide / soutenir','support':'soutenir','protect':'protéger','save':'sauver','deliver':'délivrer','harm':'nuire / dommage','benefit':'profiter / bénéfice','hurt':'blesser / faire du mal','kill':'tuer','slay':'tuer','fight':'combattre','strive':'s’efforcer','work':'agir / œuvre','act':'agir / acte','deed':'acte','do good':'faire le bien','evil':'mal / mauvais','good':'bien / bon','better':'meilleur / mieux','best':'le meilleur','bad':'mauvais','wrong':'faux / tort','right':'juste / droit','just':'juste / seulement','unjust':'injuste','justice':'justice','oppress':'opprimer','oppression':'oppression','wrongdoing':'méfait / injustice','sin':'péché','sins':'péchés','sinful':'pécheur','crime':'faute / crime','transgress':'transgresser','transgression':'transgression','obey':'obéir','obedient':'obéissant','disobey':'désobéir','command':'ordonner / commandement','order':'ordre / ordonner','forbid':'interdire','forbidden':'interdit','allow':'permettre','permitted':'permis','lawful':'licite','unlawful':'illicite','judge':'juger / juge','judgment':'jugement','decide':'décider','decision':'décision','rule':'règle / gouverner','ruler':'souverain','king':'roi','kingdom':'royaume','lord':'Seigneur','master':'maître','owner':'propriétaire / détenteur','servant':'serviteur','slave':'esclave','worshipper':'adorateur','man':'homme','men':'hommes','woman':'femme','women':'femmes','person':'personne','people':'gens / peuple','nation':'communauté / nation','community':'communauté','tribe':'tribu','family':'famille','father':'père','mother':'mère','son':'fils','daughter':'fille','child':'enfant','children':'enfants','brother':'frère','sister':'sœur','husband':'époux','wife':'épouse','parent':'parent','orphan':'orphelin','poor':'pauvre','needy':'nécessiteux','rich':'riche','wealth':'richesse / biens','property':'biens / propriété','money':'argent','gold':'or','silver':'argent métal','food':'nourriture','eat':'manger','drink':'boire','water':'eau','milk':'lait','fruit':'fruit','fruits':'fruits','tree':'arbre','garden':'jardin','gardens':'jardins','plant':'plante','seed':'graine','land':'terre / pays','earth':'terre','sky':'ciel','heaven':'ciel / paradis','heavens':'cieux','sun':'soleil','moon':'lune','star':'étoile','stars':'étoiles','mountain':'montagne','river':'rivière','sea':'mer','ship':'navire','wind':'vent','rain':'pluie','cloud':'nuage','fire':'feu','flame':'flamme','smoke':'fumée','light':'lumière','darkness':'obscurité / ténèbres','shadow':'ombre','day':'jour','night':'nuit','morning':'matin','evening':'soir','hour':'heure','time':'temps','year':'année','month':'mois','place':'lieu','house':'maison','home':'demeure / maison','door':'porte','wall':'mur','path':'chemin / voie','road':'route / chemin','way':'voie / manière','straight':'droit','clear':'clair / manifeste','truth':'vérité','falsehood':'mensonge / fausseté','lie':'mensonge / mentir','proof':'preuve','sign':'signe','signs':'signes','miracle':'signe miraculeux','message':'message','messenger':'messager','prophet':'prophète','prophets':'prophètes','book':'livre','scripture':'Écriture','revelation':'révélation','reveal':'révéler','revealed':'révélé','sent down':'fait descendre / révélé','quran':'Coran','torah':'Torah','gospel':'Évangile','angel':'ange','angels':'anges','spirit':'esprit','soul':'âme','heart':'cœur','mind':'esprit / pensée','knowledge':'connaissance','wise':'sage','wisdom':'sagesse','knowing':'sachant / omniscient selon le contexte','learned':'instruit / savant','power':'puissance','mighty':'Puissant','strong':'fort','weak':'faible','great':'grand / immense','greater':'plus grand','greatest':'le plus grand','small':'petit','little':'petit / peu','many':'nombreux','few':'peu','near':'proche','far':'lointain','high':'haut / élevé','low':'bas','first':'premier','last':'dernier','beginning':'commencement','end':'fin','before':'avant','after':'après','future':'avenir','past':'passé','world':'monde','worldly':'terrestre / mondain','life':'vie','death':'mort','alive':'vivant','living':'vivant','dead':'mort','resurrection':'résurrection','hereafter':'au-delà / vie future','paradise':'Paradis','hell':'Enfer','fire':'Feu / enfer selon le contexte','punishment':'châtiment','torment':'tourment','reward':'récompense','recompense':'rétribution / récompense','account':'compte / reddition des comptes','scale':'balance','debt':'dette','repayment':'rétribution / remboursement','mercy':'miséricorde','merciful':'miséricordieux','compassion':'compassion','grace':'grâce','favor':'faveur / bienfait','blessing':'bénédiction / bienfait','blessings':'bienfaits','gift':'don','provision':'subsistance / provision','sustenance':'subsistance','sustain':'faire subsister / soutenir','forgiving':'qui pardonne','forgiver':'Celui qui pardonne','compassionate':'plein de compassion','gracious':'bienveillant / généreux','generous':'généreux','patient':'patient','patience':'patience','grateful':'reconnaissant','thankful':'reconnaissant','ungrateful':'ingrat','unbelief':'mécréance / refus de croire','disbelief':'incrédulité / rejet de la foi','hypocrite':'hypocrite','hypocrites':'hypocrites','righteous':'juste / vertueux','righteousness':'droiture / piété','pious':'pieux','piety':'piété','mindful':'conscient / attentif','god-conscious':'conscient de Dieu','guidance':'guidance / direction','misguidance':'égarement','misguided':'égaré','stray':'s’égarer','strayed':'s’est égaré','lost':'perdu / égaré','loss':'perte','success':'succès / réussite','prosper':'prospérer','prosperous':'prospère','successful':'qui réussit','fail':'échouer','failure':'échec','win':'gagner','victory':'victoire','patiently':'avec patience','granted':'accordé','bestowed':'octroyé / accordé','provided':'a pourvu / a accordé','created':'a créé','creator':'Créateur','creation':'création','creature':'créature','all things':'toute chose','thing':'chose','things':'choses','everything':'tout','nothing':'rien','exist':'exister','existence':'existence','become':'devenir','became':'devint / est devenu','becomes':'devient','happen':'arriver / se produire','happened':'est arrivé','occur':'se produire','appear':'apparaître','disappear':'disparaître','change':'changer','changed':'a changé','turn':'tourner / devenir','turned':'s’est tourné / a tourné','open':'ouvrir','opened':'a ouvert','close':'fermer','closed':'fermé','cover':'couvrir','covered':'couvert','hide':'cacher','hidden':'caché','manifest':'manifester / manifeste','manifested':'s’est manifesté','send':'envoyer','sent':'a envoyé','descend':'descendre / être révélé','descended':'est descendu / a été révélé','rise':'se lever / s’élever','rose':'s’est levé','fall':'tomber','fell':'est tombé','stand':'se tenir debout','stood':'s’est tenu debout','sit':'s’asseoir','walk':'marcher','walked':'a marché','run':'courir','ran':'a couru','travel':'voyager','travelled':'a voyagé','move':'bouger / déplacer','moved':'a bougé / déplacé','return':'revenir / retourner','returned':'est revenu / a retourné','meet':'rencontrer','met':'a rencontré','gather':'rassembler','gathered':'a rassemblé','separate':'séparer','separated':'a séparé','join':'joindre / réunir','joined':'a rejoint','break':'briser','broke':'a brisé','destroy':'détruire','destroyed':'a détruit','build':'construire','built':'a construit','establish':'établir / accomplir','established':'a établi','maintain':'maintenir','maintained':'a maintenu','increase':'augmenter','increased':'a augmenté','decrease':'diminuer','decreased':'a diminué','multiply':'multiplier','multiplied':'a multiplié','measure':'mesure / mesurer','measured':'mesuré','count':'compter','number':'nombre','calculate':'calculer','weigh':'peser','heavy':'lourd','lightweight':'léger','easy':'facile','difficult':'difficile','hard':'dur / difficile','nearer':'plus proche','nearer to':'plus proche de','most high':'le Très-Haut','highly':'hautement','subtle':'subtil','aware':'conscient','watchful':'vigilant','guardian':'gardien / protecteur','protector':'protecteur','witness':'témoin / témoigner','witnesses':'témoins','testimony':'témoignage','evidence':'preuve','argument':'argument / preuve','parable':'parabole','example':'exemple','parable of':'parabole de','parable is':'la parabole est','similar':'semblable','like them':'comme eux','among them':'parmi eux','for them':'pour eux','to them':'à eux / leur','with them':'avec eux','from them':'d’eux / parmi eux','upon them':'sur eux','in them':'en eux','their':'leur / leurs','his':'son / sa / ses','her':'son / sa / ses / elle','your':'ton / ta / tes / votre / vos','our':'notre / nos','we':'nous','you':'tu / vous','they':'ils / elles','he':'il','she':'elle','it':'il / elle / cela selon le contexte','me':'moi / me','us':'nous','them':'eux / les','him':'lui / le','her':'elle / la','my':'mon / ma / mes','yourself':'toi-même / vous-même','themselves':'eux-mêmes / elles-mêmes','ourselves':'nous-mêmes','themselves':'eux-mêmes','both':'les deux','either':'l’un ou l’autre','neither':'ni l’un ni l’autre','each other':'l’un l’autre','one another':'les uns les autres','all of':'tout / tous les','part of':'une partie de','kind':'sorte / type','sort':'sorte','type':'type','manner':'manière','state':'état','condition':'condition','case':'cas','matter':'affaire / matière','affair':'affaire','reason':'raison','cause':'cause','result':'résultat','consequence':'conséquence','purpose':'but / finalité','intention':'intention','will':'volonté / futur selon le contexte','commandment':'commandement','permission':'permission','prohibition':'interdiction','promise':'promesse','warning':'avertissement','glad tidings':'bonne nouvelle / annonce heureuse','good news':'bonne nouvelle','news':'nouvelle(s)','tidings':'annonce / nouvelle','reminder':'rappel','remind':'rappeler','reminded':'a rappelé','admonition':'avertissement / exhortation','admonish':'avertir / exhorter','warn':'avertir','warned':'a averti','warning':'avertissement','fearful':'craintif / redoutable selon le contexte','terrible':'terrible / redoutable','severe':'sévère','painful':'douloureux','pain':'douleur','suffering':'souffrance','suffer':'souffrir','suffered':'a souffert','patiently endure':'endurer avec patience','endure':'endurer','endured':'a enduré','gratefulness':'reconnaissance','gratitude':'gratitude','repentant':'repentant','sincere':'sincère','sincerity':'sincérité','pure':'pur','purify':'purifier','purified':'purifié','clean':'propre / pur','unclean':'impur','filthy':'souillé','beautiful':'beau','goodly':'beau / bon','pleasant':'agréable','sweet':'doux','bitter':'amer','fresh':'frais','new':'nouveau','old':'ancien / vieux','young':'jeune','eternal':'éternel','everlasting':'éternel / perpétuel','permanent':'permanent','temporary':'temporaire','nearer':'plus proche','remote':'éloigné','visible':'visible','invisible':'invisible','hidden':'caché','secret':'secret','openly':'ouvertement','secretly':'en secret','publicly':'publiquement','alone':'seul','together':'ensemble','separate':'séparé','different':'différent','similarity':'ressemblance','equal':'égal','unequal':'inégal','opposite':'opposé','contrary':'contraire','correct':'correct / juste','incorrect':'incorrect','true':'vrai','false':'faux','certain':'certain','uncertain':'incertain','sure':'sûr','doubt':'doute','doubtful':'douteux','question':'question','ask':'demander','questioned':'interrogé','answer':'réponse / répondre','response':'réponse','respond':'répondre','responded':'a répondu','perhaps':'peut-être','maybe':'peut-être','surely':'assurément','indeed':'certes / en vérité','truly':'vraiment / en vérité','verily':'en vérité','certainly':'certainement','actually':'en réalité','only':'seulement / ne… que','merely':'simplement / seulement','just':'juste / seulement','especially':'particulièrement','particularly':'particulièrement','mainly':'principalement','completely':'complètement','fully':'pleinement','partly':'en partie','nearly':'presque','almost':'presque','quite':'tout à fait / assez','very':'très','too':'trop / aussi','enough':'assez','moreover':'en outre','furthermore':'de plus','instead':'à la place','otherwise':'autrement','except':'sauf','unless':'à moins que','although':'bien que','though':'bien que / pourtant','even if':'même si','even though':'bien que','whether':'si / que','whereas':'tandis que','wherever':'partout où','whenever':'chaque fois que','whatever':'quoi que / tout ce que','whoever':'quiconque','whichever':'quel que soit','thereby':'ainsi / par là','therein':'là-dedans / en cela','thereof':'de cela','thereupon':'sur cela / ensuite','thereafter':'par la suite','hence':'d’où / par conséquent','lest':'de peur que','nor':'ni','yet':'pourtant / encore','still':'encore / toujours','once':'une fois / jadis','twice':'deux fois','daily':'quotidiennement','nightly':'chaque nuit','forever':'à jamais','ever':'jamais / toujours selon le contexte','never':'jamais','again':'de nouveau','soon':'bientôt','later':'plus tard','earlier':'plus tôt','immediately':'immédiatement','suddenly':'soudain','quickly':'rapidement','slowly':'lentement','secretly':'secrètement','openly':'ouvertement','together':'ensemble','apart':'à part / séparément','inside':'à l’intérieur','outside':'à l’extérieur','up':'en haut','down':'en bas','back':'retour / arrière','forth':'en avant','forward':'vers l’avant','away':'au loin','around':'autour','along':'le long de','across':'à travers','throughout':'dans tout / partout','beyond':'au-delà de','beneath':'sous','beside':'à côté de','besides':'en outre','despite':'malgré','concerning':'concernant','regarding':'concernant','according to':'selon / conformément à','because of':'à cause de','in front of':'devant','in the presence of':'en présence de','in order to':'afin de','so that':'afin que / de sorte que','as if':'comme si','as though':'comme si','as long as':'tant que','as soon as':'dès que','no one':'personne','nobody':'personne','someone':'quelqu’un','somebody':'quelqu’un','everyone':'tout le monde','everybody':'tout le monde','anything':'quoi que ce soit','something':'quelque chose','everything':'tout','nothing':'rien','none':'aucun / personne','many of':'beaucoup de','most of':'la plupart de','some of':'certains / une partie de','one of':'l’un de','the one who':'celui qui','those who':'ceux qui','the one':'celui / celle','the ones':'ceux / celles','one who':'celui qui','such as':'tel que / comme','for example':'par exemple','that is':'c’est-à-dire','in truth':'en vérité','in fact':'en fait','by means of':'au moyen de','in accordance with':'conformément à','with regard to':'à l’égard de','on account of':'en raison de','in the way of':'dans la voie de','the way of':'la voie de','the straight path':'la voie droite','the last day':'le Dernier Jour','the day of judgment':'le Jour du jugement','the day of resurrection':'le Jour de la résurrection','the life of this world':'la vie d’ici-bas','this worldly life':'cette vie d’ici-bas','the hereafter':'l’au-delà / la vie future','the people':'les gens / le peuple','the believers':'les croyants','the disbelievers':'ceux qui rejettent la foi','the hypocrites':'les hypocrites','the righteous':'les justes / les pieux','the pious':'les pieux','the unseen':'l’invisible','the book':'le Livre / l’Écriture','the lord':'le Seigneur','the most merciful':'le Tout-Miséricordieux','the most gracious':'le Tout-Miséricordieux / le Tout-Rayonnant de miséricorde','the all-knowing':'Celui qui sait tout','the all-wise':'le Sage','the almighty':'le Tout-Puissant','the all-hearing':'Celui qui entend tout','the all-seeing':'Celui qui voit tout','the forgiving':'Celui qui pardonne','the oft-forgiving':'Celui qui pardonne abondamment','the creator':'le Créateur','the provider':'Celui qui pourvoit','the judge':'le Juge','the king':'le Roi','the master':'le Maître','the truth':'la vérité','the light':'la lumière','the darkness':'les ténèbres / l’obscurité','the fire':'le Feu / l’Enfer selon le contexte','the garden':'le Jardin / le Paradis selon le contexte','the gardens':'les jardins','the punishment':'le châtiment','the reward':'la récompense','the mercy':'la miséricorde','the grace':'la grâce','the favor':'la faveur / le bienfait','the signs':'les signes / les versets','the verse':'le verset / le signe','the verses':'les versets / les signes','the messenger':'le Messager','the prophet':'le prophète','the prophets':'les prophètes','the angels':'les anges','the spirit':'l’esprit','the soul':'l’âme','the heart':'le cœur','the heavens':'les cieux','the earth':'la terre','the sky':'le ciel','the sun':'le soleil','the moon':'la lune','the stars':'les étoiles','the mountains':'les montagnes','the sea':'la mer','the rivers':'les rivières','the water':'l’eau','the rain':'la pluie','the wind':'le vent','the day':'le jour','the night':'la nuit','the morning':'le matin','the evening':'le soir','the people of the book':'les gens du Livre','people of the book':'les gens du Livre','those of faith':'ceux qui ont la foi','those who believe':'ceux qui croient','those who disbelieve':'ceux qui rejettent la foi','those who do good':'ceux qui font le bien','those who do evil':'ceux qui font le mal','those who are patient':'ceux qui sont patients','those who are grateful':'ceux qui sont reconnaissants','those who are mindful':'ceux qui sont conscients de Dieu','those who know':'ceux qui savent','those who do not know':'ceux qui ne savent pas','those who repent':'ceux qui se repentent','those who ask forgiveness':'ceux qui demandent pardon','those who follow':'ceux qui suivent','those who turn back':'ceux qui reviennent / se repentent','those who are guided':'ceux qui sont guidés','those who go astray':'ceux qui s’égarent','those who transgress':'ceux qui transgressent','those who are unjust':'ceux qui sont injustes','those who are wrongdoers':'les injustes / ceux qui commettent le mal','those who fear':'ceux qui craignent','those who hope':'ceux qui espèrent','those who trust':'ceux qui se confient','those who spend':'ceux qui dépensent','those who establish prayer':'ceux qui accomplissent la prière','those who give charity':'ceux qui donnent l’aumône','those who keep their covenant':'ceux qui respectent leur engagement','those who remember':'ceux qui se souviennent / invoquent','those who are certain':'ceux qui ont la certitude','those who reflect':'ceux qui réfléchissent','those who understand':'ceux qui comprennent','those who hear':'ceux qui entendent','those who see':'ceux qui voient','those who are aware':'ceux qui sont conscients','those who are sincere':'ceux qui sont sincères','those who are truthful':'ceux qui sont véridiques','those who are obedient':'ceux qui obéissent','those who are humble':'ceux qui sont humbles','those who are thankful':'ceux qui sont reconnaissants','those who are patient':'ceux qui sont patients','those who are successful':'ceux qui réussissent / prospèrent','those who prosper':'ceux qui prospèrent','those who succeed':'ceux qui réussissent',
+ 'and in the hereafter':'et dans la vie future / l’au-delà','in the hereafter':'dans la vie future / l’au-delà','hereafter':'vie future / vie de l’au-delà','the hereafter':'la vie future / la vie de l’au-delà','last':'dernier / ultime','the last':'le dernier / l’ultime','life':'vie','the life of this world':'la vie d’ici-bas','this world':'ce monde / ici-bas','worldly life':'vie d’ici-bas','certainly':'avec certitude','are certain':'sont certains','they are certain':'ils ont la certitude','they believe':'ils croient','believe with certainty':'croire avec certitude','those are':'ceux-là sont','those':'ceux-là / ceux','indeed':'certes / en vérité','and':'et','in':'dans / en','by':'par','for':'pour','to':'à / vers','of':'de','from':'de / depuis','with':'avec','the':'le / la / les (article défini)','a':'un / une','no':'aucun / pas de','there is no':'il n’y a pas de','doubt':'doute','in it':'en lui / à son sujet','guidance':'guidance / voie qui guide','for the righteous':'pour les pieux','the righteous':'les pieux','the mindful':'ceux qui sont conscients de Dieu','those who are mindful':'ceux qui sont conscients de Dieu', 
+ 'that':'cela / celui-là','this':'ceci / ce','the book':'le Livre','(is) the book':'(est) le Livre','book':'livre','no':'non / pas de','doubt':'doute','in it':'en lui / dans celui-ci','a guidance':'une guidance / une voie droite','guidance':'guidance, orientation','for the god-conscious':'pour ceux qui sont conscients de Dieu','for the righteous':'pour les pieux / les justes','allah':'Allah','god':'Dieu','lord':'Seigneur','merciful':'miséricordieux','most merciful':'le Tout Miséricordieux','name':'nom','in':'dans','from':'de / depuis','to':'à / vers','and':'et','or':'ou','not':'ne… pas','no, not':'non, ne… pas','who':'qui / ceux qui','those':'ceux','those who':'ceux qui','what':'ce que / ce qui','which':'qui / lequel','when':'quand / lorsque','if':'si','then':'alors','is':'est','are':'sont','was':'était / fut','were':'étaient / furent','he':'il','they':'ils / elles','you':'tu / vous','we':'nous','i':'je','his':'son / sa / ses','their':'leur / leurs','your':'ton / ta / tes; votre / vos','my':'mon / ma / mes','with':'avec','upon':'sur / au-dessus de','over':'sur / au-dessus de','under':'sous','before':'avant','after':'après','between':'entre','all':'tout / tous','every':'chaque','one':'un / une','people':'gens / personnes','man':'homme','woman':'femme','day':'jour','night':'nuit','earth':'terre','heaven':'ciel','heavens':'cieux','sky':'ciel','water':'eau','fire':'feu','light':'lumière','darkness':'ténèbres / obscurité','truth':'vérité','falsehood':'mensonge / faux','sign':'signe','signs':'signes','verse':'verset / signe','verses':'versets / signes','prayer':'prière','believe':'croire','believe in':'croire en','believers':'croyants','disbelieve':'ne pas croire / rejeter la foi','disbelievers':'ceux qui ne croient pas','know':'savoir / connaître','knowledge':'connaissance','hear':'entendre','see':'voir','say':'dire','said':'dit','do':'faire','deed':'acte','good':'bon / bien','evil':'mal / mauvais','create':'créer','created':'a créé','creation':'création','give':'donner','gave':'a donné','provided':'a pourvu / a accordé','sustain':'soutenir / maintenir','worship':'adorer / vouer un culte','serve':'servir','forgive':'pardonner','forgiveness':'pardon','mercy':'miséricorde','punishment':'châtiment','reward':'récompense','garden':'jardin','gardens':'jardins','paradise':'Paradis','hell':'Enfer','fear':'craindre / crainte','fearful':'plein de crainte','pious':'pieux','righteous':'justes / vertueux','patient':'patient','patience':'patience','grateful':'reconnaissant','thankful':'reconnaissant','power':'puissance','able':'capable','might':'puissance','great':'immense / grand','greatest':'le plus grand','wise':'sage','hearing':'qui entend tout','seeing':'qui voit tout','forgiving':'qui pardonne','forgiver':'Celui qui pardonne','forbidden':'interdit','permitted':'permis','lawful':'licite','unlawful':'illicite','promise':'promesse','covenant':'alliance / engagement','heart':'cœur','soul':'âme','spirit':'esprit','messenger':'messager','prophet':'prophète','people of the book':'gens du Livre','world':'monde','worldly life':'vie d’ici-bas','hereafter':'au-delà','last day':'Dernier Jour','resurrection':'résurrection','judgment':'jugement','wisdom':'sagesse','straight path':'voie droite','path':'chemin / voie','guides':'guide','guided':'guidé','misguided':'égaré','clear':'clair / manifeste','proof':'preuve','evidence':'preuve','false':'faux','true':'vrai','word':'mot / parole','words':'mots / paroles','speech':'parole','command':'ordre / commandement','knowledgeable':'savant / qui sait','knowing':'qui sait tout','living':'Vivant','eternal':'Éternel','unique':'Unique','one, unique':'Un, Unique','self-sufficient':'Celui dont tout dépend','offspring':'descendance','father':'père','son':'fils','mother':'mère','child':'enfant','children':'enfants','wealth':'richesse / biens','money':'argent','spend':'dépenser','charity':'aumône / charité','poor':'pauvre','needy':'nécessiteux','orphan':'orphelin','neighbor':'voisin','food':'nourriture','eat':'manger','drink':'boire','drink':'boire','eat and drink':'mangez et buvez','come':'venir','came':'est venu','go':'aller','went':'est allé','return':'revenir / retourner','returning':'retour','enter':'entrer','entered':'est entré','leave':'quitter / laisser','send':'envoyer','sent down':'révéler / faire descendre','reveal':'révéler','revealed':'révélé','revelation':'révélation','scripture':'Écriture','quran':'Coran','torah':'Torah','gospel':'Évangile','angel':'ange','angels':'anges','devil':'diable','satan':'Satan','jinn':'djinns','unseen':'invisible / monde caché','believe in the unseen':'croire à l’invisible','guidance for':'guidance pour','dhalika':'cela / celui-là','dhālika':'cela / celui-là'
+};
+function normalizeGloss(s){return String(s||'').replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').trim().replace(/[.!,:;]+$/,'').toLowerCase();}
+function normalizeArabicWord(s){
+ return String(s||"")
+  .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g,"")
+  .replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ـ/g,"")
+  .replace(/[ۖۗۘۙۚۛۜ۞]/g,"").trim();
+}
+// Glossaire de secours pour les formes fréquentes. Les préfixes attachés
+// (wa-, fa-, bi-, li-, ka-, al-) sont traités séparément lorsque c'est sûr.
+const arabicGloss = {
+ "والذين":"et ceux qui","الذين":"ceux qui","الذي":"celui qui / qui","التي":"celle qui / qui","اللذين":"les deux qui",
+ "افلح":"réussir / prospérer ; atteindre le succès (forme passée : il a réussi / prospéré)","يفلح":"réussir / prospérer ; parvenir au succès","المفلحون":"ceux qui réussissent / prospèrent","قبل":"avant / auparavant","قبلك":"avant toi (قَبْلِ = avant ; كَ = toi, suffixe masculin singulier)","قبلكم":"avant vous","قبلهم":"avant eux / avant eux-mêmes selon le contexte","قبلنا":"avant nous","قبلها":"avant elle / avant cela selon le contexte","قبله":"avant lui / avant cela selon le contexte","من قبل":"auparavant / avant cela","من قبلك":"avant toi / avant toi-même selon le contexte","من قبلهم":"avant eux / auparavant",
+ "بعد":"après / ensuite","بعدك":"après toi","بعدكم":"après vous","بعدهم":"après eux","بعدها":"après elle / après cela selon le contexte","بعده":"après lui / après cela selon le contexte",
+ "وهو":"et Lui / et il","وهم":"et eux / et ils","وهي":"et elle","وأن":"et que","وإن":"et si / et certes",
+ "بما":"par ce que / de ce que","مما":"de ce que","في":"dans / en","وفي":"et dans / et en","من":"de / parmi","ومن":"et de / et parmi",
+ "إلى":"vers / à","إلي":"vers / à","على":"sur / à","وعلى":"et sur / et à","عن":"au sujet de / de","مع":"avec","ثم":"puis / ensuite",
+ "لا":"non / ne… pas","لم":"ne… pas (passé)","لن":"ne… pas (futur)","ما":"ce que / ce qui / ne… pas, selon le contexte",
+ "إن":"certes / si","أن":"que","إنما":"ne… que / seulement","قد":"déjà / certes, selon le contexte",
+ "كان":"était / fut","كانت":"elle était / fut","كانوا":"ils étaient / furent","يكون":"être / devenir","قال":"il a dit","قالوا":"ils ont dit","قيل":"il fut dit / on dit / il a été dit (forme passive ; le rendu dépend du contexte)","قيلت":"elle fut dite / il fut dit, selon le nom concerné","قيل لهم":"il leur fut dit / on leur dit",
+ "قل":"dis","يقول":"il dit / il dit que","يقولون":"ils disent","خلق":"créer / a créé","خلقنا":"Nous avons créé",
+ "رزق":"pourvoir / attribuer une subsistance","رزقهم":"Il leur a accordé leur subsistance","يرزق":"Il pourvoit","ينفقون":"ils dépensent / donnent de leurs biens",
+ "آمن":"croire / avoir foi","آمنوا":"ils ont cru","يؤمن":"il croit","يؤمنون":"ils croient","والذين":"et ceux qui",
+ "الصلاة":"la prière","الصلاة":"la prière","يقيمون":"ils accomplissent / établissent","يقيمون الصلاة":"ils accomplissent la prière",
+ "الزكاة":"l’aumône obligatoire (zakāt)","كتاب":"livre / Écriture","الكتاب":"le Livre / l’Écriture",
+ "رب":"Seigneur","ربهم":"leur Seigneur","ربكم":"votre Seigneur","الله":"Allah","لله":"à Allah / appartient à Allah",
+ "الناس":"les gens / l’humanité","الارض":"la terre","السماوات":"les cieux","السماء":"le ciel","اليوم":"le jour","يوم":"jour",
+ "الحق":"la vérité / le droit","حق":"vérité / droit","خير":"bien / meilleur","شر":"mal","كل":"tout / chaque","كلهم":"tous",
+ "منهم":"parmi eux / d’eux","لهم":"à eux / pour eux","عليهم":"sur eux / à leur encontre","إليهم":"vers eux",
+ "هذا":"ceci / ce","ذلك":"cela / celui-là","تلك":"cela / celle-là","أولئك":"ceux-là","هؤلاء":"ceux-ci",
+ "فيه":"en lui / dans celui-ci","بهم":"par eux / avec eux","لهم":"à eux / pour eux","عند":"auprès de / chez",
+ "الرحمن":"le Tout-Miséricordieux","الرحيم":"le Très-Miséricordieux","غفور":"Plein de pardon","عليم":"Omniscient / qui sait tout",
+ "سميع":"Celui qui entend tout","بصير":"Celui qui voit tout","عظيم":"immense / grand","كبير":"grand","عذاب":"châtiment","أجر":"récompense",
+ "الجنة":"le Jardin / le Paradis","النار":"le Feu / l’Enfer","الآخرة":"la vie future / l’au-delà","الدنيا":"la vie d’ici-bas",
+ "المؤمنون":"les croyants","الكافرون":"ceux qui rejettent la foi","المنافقون":"les hypocrites","المتقون":"les pieux",
+ "هدى":"guidance / direction","نور":"lumière","كتاب":"Livre / Écriture","آيات":"signes / versets","آية":"signe / verset",
+ "الرحمة":"la miséricorde","رحمة":"miséricorde","عبد":"serviteur","عباد":"serviteurs","عباده":"Ses serviteurs",
+ "نحن":"nous","أنا":"je","أنت":"tu","أنتم":"vous","هم":"ils / eux","هو":"il / Lui","هي":"elle","كم":"vous / votre, selon le contexte",
+ "بسم":"au nom de","اسم":"nom","الحمد":"la louange","لله":"à Allah","العالمين":"les mondes / l’ensemble des êtres",
+ "نعبد":"nous adorons / nous vouons un culte","نستعين":"nous demandons secours","اهدنا":"guide-nous","الصراط":"la voie / le chemin",
+ "المستقيم":"droit / rectiligne","أنعمت":"Tu as accordé un bienfait","عليهم":"sur eux","غير":"autre que / non","المغضوب":"ceux qui ont encouru la colère","الضالين":"les égarés",
+ "بسم":"au nom de (bi- + ism)","اسم":"nom ; désignation","لله":"à Allah / appartient à Allah","بالله":"par Allah / en Allah, selon le contexte","إله":"divinité","آلهة":"divinités","ربنا":"notre Seigneur","ربهم":"leur Seigneur","ربك":"ton Seigneur / votre Seigneur","ربه":"son Seigneur","ربها":"son Seigneur / son maître, selon le contexte",
+ "الرحمن":"le Tout-Miséricordieux","رحمن":"Tout-Miséricordieux","الرحيم":"le Très-Miséricordieux","رحيم":"miséricordieux","مالك":"maître / possesseur","ملك":"roi / souverain ; peut aussi désigner la possession selon la vocalisation","يوم الدين":"Jour de la rétribution / du jugement","إياك":"Toi seul / c’est Toi que… (pronom mis en avant)","إياكم":"vous seuls / c’est vous que…","نعبد":"nous adorons / nous vouons un culte","نستعين":"nous demandons secours / aide","اهدنا":"guide-nous","أنعمت":"Tu as accordé un bienfait","غير":"autre que / différent de","المغضوب":"ceux qui ont encouru la colère","الضالين":"les égarés",
+ "الذين":"ceux qui","الذي":"celui qui / qui","التي":"celle qui / qui","اللذان":"les deux qui (masculin)","اللتان":"les deux qui (féminin)","اللاتي":"celles qui","اللواتي":"celles qui","أولئك":"ceux-là / celles-là","هؤلاء":"ceux-ci / celles-ci","هذا":"ceci / ce / celui-ci, selon le nom","هذه":"cette / celle-ci","ذلك":"cela / celui-là ; « ce… » selon le nom","تلك":"cela / celle-là ; « cette… » selon le nom",
+ "آمن":"croire / avoir foi","آمنوا":"ils ont cru / ils ont eu foi","يؤمن":"il croit / il adhère par la foi","يؤمنون":"ils croient / ils ont foi","كفر":"rejeter la foi / être ingrat, selon le contexte","كفروا":"ils ont rejeté la foi","الكافرون":"ceux qui rejettent la foi","المؤمنون":"les croyants / ceux qui ont foi","المؤمنين":"les croyants / ceux qui ont foi","الناس":"les gens / l’humanité","إنسان":"être humain / humain","الإنسان":"l’être humain / l’humain","قوم":"peuple / groupe","قوما":"un peuple / un groupe","أمة":"communauté / peuple","أمم":"communautés / peuples",
+ "الكتاب":"le Livre / l’Écriture","كتاب":"livre / Écriture","القرآن":"le Coran / la récitation","قرآن":"Coran / récitation","الحق":"la vérité / ce qui est juste","حق":"vérité / droit / dû, selon le contexte","الباطل":"le faux / ce qui est vain","باطل":"faux / vain","آية":"signe / verset","آيات":"signes / versets","الآيات":"les signes / les versets","الذكر":"le rappel / l’évocation","ذكر":"rappel / mention / se souvenir, selon la forme","الحكمة":"la sagesse","حكمة":"sagesse","العلم":"la connaissance / le savoir","علم":"savoir / connaissance","عليم":"qui sait tout / Omniscient","حكيم":"sage / plein de sagesse","سميع":"qui entend tout","بصير":"qui voit tout","غفور":"qui pardonne abondamment","غفار":"qui pardonne maintes fois","تواب":"Celui qui accueille le repentir","رحمة":"miséricorde","رحمته":"Sa miséricorde","نعمة":"bienfait / grâce","نعم":"oui ; ou bienfaits selon la vocalisation et le contexte","فضل":"faveur / grâce / surplus","رزق":"subsistance / pourvoir","رزقهم":"Il leur a accordé leur subsistance","يرزق":"Il pourvoit / accorde la subsistance",
+ "السماء":"le ciel","سماء":"ciel","السماوات":"les cieux","الأرض":"la terre","أرض":"terre","الماء":"l’eau","ماء":"eau","النار":"le Feu / l’Enfer selon le contexte","نار":"feu","الجنة":"le Jardin / le Paradis selon le contexte","جنة":"jardin / Paradis selon le contexte","جنات":"jardins / Paradis","جهنم":"Géhenne / Enfer","الدنيا":"la vie d’ici-bas / le monde présent","الآخرة":"la vie future / l’au-delà","آخرة":"dernière / vie future selon le contexte","الحياة":"la vie","حياة":"vie","الموت":"la mort","موت":"mort","قلب":"cœur","قلوب":"cœurs","نفس":"âme / soi / personne, selon le contexte","أنفس":"âmes / personnes","روح":"esprit","نور":"lumière","ظلمات":"ténèbres / obscurités","ليل":"nuit","الليل":"la nuit","نهار":"jour / clarté du jour","اليوم":"aujourd’hui / le jour","يوم":"jour","الساعة":"l’Heure","ساعة":"heure",
+ "قال":"il a dit / dit","قالوا":"ils ont dit","قيل":"il fut dit / on dit ; forme passive de قَالَ","قيلت":"elle fut dite / il fut dit, selon le nom concerné","يقول":"il dit / il dit que","يقولون":"ils disent","قل":"dis ! (impératif)","جعل":"faire / placer / établir / rendre, selon le contexte","جعلنا":"Nous avons fait / établi","خلق":"créer / a créé","خلقنا":"Nous avons créé","أرسل":"envoyer / dépêcher","أرسلنا":"Nous avons envoyé","أنزل":"faire descendre / révéler","نزل":"descendre","تنزيل":"descente / révélation","سمع":"entendre / écouter","يسمع":"il entend","يسمعون":"ils entendent","رأى":"voir","يرى":"il voit / il considère","يعلم":"il sait","يعلمون":"ils savent","يعمل":"il agit / il fait","يعملون":"ils agissent / font","عمل":"action / œuvre / agir","صالح":"bon / juste / vertueux","الصالحات":"les bonnes œuvres / les actes justes","ظلم":"injustice / léser / faire du tort","ظالمون":"injustes / ceux qui font du tort","الصبر":"la patience","صبر":"patience / persévérer","شكر":"remercier / gratitude","يشكر":"il remercie / se montre reconnaissant","غفر":"pardonner","يغفر":"il pardonne","استغفر":"demander pardon","مغفرة":"pardon","تاب":"se repentir / revenir","يتوب":"il se repent / revient","هدى":"guidance / guider","اهدنا":"guide-nous","يهدي":"il guide","ضلال":"égarement","ضل":"s’égarer","أفلح":"il a réussi / prospéré","يفلح":"il réussit / prospère","المفلحون":"ceux qui réussissent / prospèrent","خسر":"perdre / être perdant","خاسرون":"perdants / ceux qui ont subi une perte","عذاب":"châtiment","عقاب":"sanction / châtiment","أجر":"récompense / rétribution","جزاء":"rétribution / récompense","ثواب":"récompense","خير":"bien / meilleur","شر":"mal","حسن":"beau / bon / bien agir selon la forme","سيئة":"mauvaise action / faute","حسنة":"bonne action / bienfait","سلام":"paix / salut","سلاما":"paix / salut","دعاء":"invocation / appel","دعا":"appeler / invoquer","يدعو":"il appelle / invoque","استجاب":"répondre / exaucer","عباد":"serviteurs","عبد":"serviteur / adorer selon la forme","عبادة":"adoration","الصلاة":"la prière","صلاة":"prière","الزكاة":"la zakāt / aumône purificatrice","زكاة":"zakāt / aumône purificatrice","الصيام":"le jeûne","صوم":"jeûne","حج":"pèlerinage","سجود":"prosternation","سجد":"se prosterner","ركوع":"inclinaison","سبحان":"gloire à… / transcendance de…","الحمد":"la louange / la gratitude","الحمد لله":"louange à Allah / toute louange appartient à Allah"
+};
+
+// Normalisation des entrées arabes : les signes vocaliques et variantes d’alif sont retirés avant comparaison.
+function arabicLookupCandidates(word){
+ const p=normalizeArabicWord(word); const a=[p];
+ if(/^[وفبكل]/.test(p)&&p.length>2)a.push(p.slice(1));
+ for(const x of [...a]){if(x.startsWith("ال")&&x.length>3)a.push(x.slice(2));}
+ if(p.startsWith("وال")&&p.length>4)a.push(p.slice(3));
+ if(p.startsWith("بال")&&p.length>4)a.push(p.slice(3));
+ if(p.startsWith("فال")&&p.length>4)a.push(p.slice(3));
+ if(p.startsWith("لل")&&p.length>3)a.push(p.slice(2));
+ return [...new Set(a)];
+}
+const normalizedArabicGloss = Object.fromEntries(Object.entries(arabicGloss).map(([k,v])=>[normalizeArabicWord(k),v]));
+function lookupArabicGloss(word){
+ for(const candidate of arabicLookupCandidates(word)) if(normalizedArabicGloss[candidate]) return normalizedArabicGloss[candidate];
+ return "";
+}
+
+// Forme coranique ciblée : قِيلَ est le passif de قالَ, de la racine ق و ل.
+function targetedLexicalNote(arabic, surahId, verseNo){
+ const plain=normalizeArabicWord(arabic);
+ if(plain==='افلح') return 'أَفْلَحَ (aflaḥa) : « il a réussi / prospéré ». Racine ف ل ح ; l’idée de réussite ou de succès se précise selon la phrase.';
+ if(plain==='قيل'){
+   return 'قِيلَ (qīla) : forme verbale au passé, voix passive, de la famille de قَالَ (qāla, « il a dit »). Sens de base : « il fut dit » ; en français naturel, souvent « on dit / il leur fut dit », selon les mots qui suivent. La forme seule ne précise pas qui parle : il ne faut pas ajouter un sujet absent de l’arabe.';
+ }
+ return '';
+}
+
+function lexicalReviewStatus(english, arabic, translit, surahId, verseNo){
+ const ar=normalizeArabicWord(arabic);
+ const noConj=ar.replace(/^[وفبكلس]/,"");
+ const t=String(translit||"").toLowerCase().replace(/[’'`]/g,"");
+ // This label reports the source of the app's gloss; it is not a claim of scholarly certification.
+ if (lookupArabicGloss(ar)) return {label:"Entrée arabe du lexique de travail · nuance à lire dans le contexte", level:"entry"};
+ if (surahId===1 && fatihaStudy.some(x=>x.match.test(String(arabic||"").replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g,"")))) return {label:"Note grammaticale disponible · Fātiḥa", level:"study"};
+ const raw=normalizeGloss(english);
+ if (raw && frGloss[raw]) return {label:"Sens issu du glossaire français de travail", level:"glossary"};
+ if (/الاخرة|الءاخرة|بالاخرة|بالءاخرة|الدنيا|يوقنون|يؤمنون|المتقين|الغيب|الكتاب|هدى|الذين/.test(ar) || /akhir|dunya|yuqin|yumin|muttaqin|ghayb|kitab|huda|alladhina/.test(t)) return {label:"Sens à contrôler", level:"study"};
+ if (raw && /[a-z]/i.test(raw)) return {label:"Indice de traduction source · vérification nécessaire", level:"review"};
+ return {label:"Sens à vérifier", level:"review"};
+}
+
+function frenchGloss(english, arabic, translit, surahId, verseNo){
+ const raw=String(english||'').replace(/<[^>]*>/g,'').trim();
+ const n=normalizeGloss(raw);
+ const arPlain=normalizeArabicWord(arabic);
+ const t=String(translit||'').toLowerCase().replace(/[’'`]/g,'').replace(/[ā]/g,"a").replace(/[ī]/g,"i").replace(/[ū]/g,"u").replace(/[ḥ]/g,"h").replace(/[ṣ]/g,"s").replace(/[ḍ]/g,"d").replace(/[ṭ]/g,"t").replace(/[ʿ']/g,"");
+ const arWithoutConjunction=arPlain.replace(/^[وفبكلس]/,"");
+ const arabicEntry=lookupArabicGloss(arPlain);
+ if (arabicEntry) {
+   const prefix=(arPlain.startsWith("و") && !normalizedArabicGloss[arPlain]) ? "et " : "";
+   return prefix+arabicEntry;
+ }
+ if (/^(wa-)?alladhina$/.test(t) || /والذين|الذين/.test(arPlain)) return "et ceux qui / ceux qui ; le préfixe wa- signifie « et » et alladhīna introduit un groupe de personnes décrit par la suite.";
+ if (/^(wa-)?alladhi$/.test(t) || /الذي/.test(arPlain)) return "celui qui / qui ; avec wa- : « et celui qui ».";
+ if (/^(wa-)?allati$/.test(t) || /التي/.test(arPlain)) return "celle qui / qui ; avec wa- : « et celle qui ».";
+ // Sens lexical français contrôlé pour les termes coraniques récurrents.
+ if (/الاخرة|الءاخرة|بالاخرة|بالءاخرة/.test(arPlain) || /akhir(a|ati|ati$)|akhirati|akhira/.test(t)) {
+   if (/^wa|^wabil|^wa-bi/.test(t) || /وب/.test(arPlain)) return 'et + à/en + la vie dernière ; dans le verset 2:4 : « et à la vie future / à l’au-delà ». « Dernière » s’oppose à la vie d’ici-bas.';
+   return 'la vie dernière, la vie future, la vie de l’au-delà ; littéralement, ce qui vient après / ce qui est dernier.';
+ }
+ if (/الدنيا/.test(arPlain) || /dunya/.test(t)) return 'la vie d’ici-bas, le monde présent ; s’oppose à al-ākhira, la vie future.';
+ if (/يوقنون/.test(arPlain) || /yuqin/.test(t)) return 'ils ont la certitude, ils tiennent pour certain ; plus fort qu’une simple supposition.';
+ if (/يؤمنون/.test(arPlain) || /yuminun|yuminu/.test(t)) return 'ils croient / ils adhèrent avec foi ; le complément précise ce en quoi ils croient.';
+ if (/المتقين/.test(arPlain) || /muttaqin/.test(t)) return 'les pieux, ceux qui gardent conscience de Dieu et cherchent à agir avec droiture.';
+ if (/الغيب/.test(arPlain) || /ghayb/.test(t)) return 'l’invisible, ce qui échappe aux sens ou demeure caché ; le contexte peut viser les réalités non directement observables.';
+ if (/الكتاب/.test(arPlain) || /kitab/.test(t)) return 'le Livre, l’Écriture ; dans Al-Baqara 2:2, désigne le Livre révélé.';
+ if (/هدى/.test(arPlain) || /hudan|huda/.test(t)) return 'guidance, direction qui conduit sur la bonne voie ; dans la phrase : un guide pour les pieux.';
+ if (/الذين/.test(arPlain) || /alladhina/.test(t)) return 'ceux qui ; introduit un groupe de personnes décrit par ce qui suit.';
+ // Contrôles lexicaux ciblés pour quelques formes coraniques importantes.
+ if (/و?ب?الاخرة|و?ب?الءاخرة/.test(arPlain) || /al-?ā?khira|akhirati|alakhirah/.test(t)) return 'الآخرة (al-ākhira) : littéralement « la dernière / ce qui vient après » ; dans le Coran, la vie future, la vie de l’au-delà. Avec وَبِـ (wa-bi-) : « et en/à la vie future », rendu naturellement « et à l’au-delà » selon la phrase.';
+ if (/^ذَ?ٰ?لِكَ|^ذٰلك|^ذلك/.test(arPlain) || /^dh[aā]lika$/i.test(translit||'')) return (surahId===2 && verseNo===2) ? 'ذَٰلِكَ (dhālika) : démonstratif masculin éloigné, littéralement « celui-là / cela ». Dans Al-Baqara 2:2, la traduction de toute l’expression peut être « ce Livre » ; certaines traductions françaises rendent idiomatiquement « Voici le Livre » ou « C’est le Livre ». Ce n’est pas toujours simplement « ceci ».' : 'ذَٰلِكَ (dhālika) : « celui-là / cela » ; démonstratif masculin éloigné. En français, « ce… », « cela » ou « celui-là » selon le nom et la phrase.';
+ if (/^ال?دنيا/.test(arPlain) || /dunyā|dunya/.test(t)) return 'الدنيا (ad-dunyā) : sens de base « la plus proche / la basse », selon l’analyse lexicale ; dans le Coran, le monde présent ou la vie d’ici-bas, souvent opposé à الآخرة (l’au-delà).';
+ // ذَٰلِكَ is literally a distal masculine demonstrative; French rendering depends on context.
+ if (/^ذَٰ?لِكَ|^ذٰلك|^ذلك/.test(arabic.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g,'')) || /^dh[aā]lika$/i.test(translit||'')) {
+   return (surahId===2 && verseNo===2) ? 'cela / ce Livre (littéralement : « celui-là »). Dans ce verset, le français idiomatique peut dire « Voici le Livre » ou « C’est le Livre ».' : 'cela / celui-là (démonstratif masculin singulier ; « ce… » selon la phrase).';
+ }
+ if (frGloss[n]) return frGloss[n];
+ // Résolution composée : chercher d'abord les expressions anglaises les plus longues,
+ // puis traduire les segments connus sans prétendre résoudre une nuance inconnue.
+ if (/[a-z]/i.test(raw) && !/[ء-ي]/.test(raw)) {
+   const token=raw.toLowerCase().replace(/[^a-z' -]/g," ").replace(/\s+/g," ").trim();
+   if (frGloss[token]) return frGloss[token];
+   const keys=Object.keys(frGloss).filter(k=>k.length>2).sort((a,b)=>b.length-a.length);
+   let rest=token, parts=[], guard=0;
+   while(rest && guard++<20){
+     rest=rest.trim();
+     if(!rest) break;
+     let found="";
+     for(const k of keys){
+       if(rest===k || rest.startsWith(k+" ")){found=k;break;}
+     }
+     if(found){
+       parts.push(frGloss[found]);
+       rest=rest.slice(found.length).trim();
+       continue;
+     }
+     const first=rest.split(" ")[0];
+     if(frGloss[first]){
+       parts.push(frGloss[first]);
+       rest=rest.slice(first.length).trim();
+     } else {
+       // Ne jamais afficher une glose anglaise brute comme si c’était une traduction française.
+       // Si une partie est connue, la conserver et signaler honnêtement le segment restant.
+       if(parts.length) {
+         parts.push("autre nuance à vérifier dans le contexte");
+         return [...new Set(parts)].join(" · ");
+       }
+       return "Sens français provisoire à préciser à partir de la forme arabe ; lire aussi la traduction complète du verset ci-dessous.";
+     }
+   }
+   if(parts.length) return parts.join(" · ");
+ }
+ if(raw && /[a-z]/i.test(raw)) return "Sens français provisoire à préciser à partir de la forme arabe ; la traduction du verset aide à comprendre son emploi ici.";
+ return "Sens français à préciser à partir de la forme arabe et du contexte du verset.";
+
+}
+
+// Sept éclairages français originaux pour la Fātiḥa ; ils ne sont pas attribués à des traducteurs.
+const fatihaLenses = {
+1:["Par le Nom d’Allah, le Tout-Rayonnant d’Amour, le Très-Rayonnant d’Amour.","Au nom d’Allah, le Tout-Miséricordieux, le Très-Miséricordieux.","Par le Nom d’Allah, dont la miséricorde embrasse toute chose.","Avec le Nom d’Allah, Source d’une miséricorde immense et constante.","Au Nom d’Allah, le Clément envers toute la création, le Miséricordieux.","Par le Nom d’Allah, Celui dont l’amour protège et nourrit.","Au nom d’Allah, le Tout-Rayonnant de miséricorde, le Plein de bonté."],
+2:["La louange tout entière appartient à Allah, Seigneur des mondes.","À Allah revient toute louange, Lui qui prend soin de tous les univers.","Toute gratitude et toute louange sont à Allah, Maître des êtres.","Allah seul mérite la louange ; Il est le Seigneur de toute existence.","La louange est à Allah, Celui qui fait croître et gouverne les mondes.","À Allah la louange, Lui qui soutient et accompagne toute créature.","Toute louange revient à Allah, Seigneur de tous les mondes."],
+3:["Le Tout-Miséricordieux, le Très-Miséricordieux.","Le Tout-Rayonnant d’Amour, le Très-Rayonnant d’Amour.","Celui dont la miséricorde est immense, Celui dont la bonté demeure.","Le Miséricordieux envers tous, le Miséricordieux sans cesse.","La Source d’une miséricorde universelle et d’une tendresse constante.","Celui dont la miséricorde enveloppe, Celui qui la renouvelle.","Le Tout-Clément, le Plein de miséricorde."],
+4:["Maître du Jour de la Rétribution.","Souverain du Jour où chacun répondra de ses actes.","Détenteur de l’autorité au Jour du compte.","Celui à qui appartient le Jour de la juste rétribution.","Maître du Jour où les actes recevront leur réponse.","Souverain du Jour du jugement et du décompte.","Celui qui détient le Jour de la Redevance."],
+5:["C’est Toi seul que nous adorons, et c’est de Toi seul que nous implorons l’aide.","À Toi notre adoration ; auprès de Toi nous cherchons secours.","Nous ne vouons notre culte qu’à Toi et ne demandons qu’à Toi de nous soutenir.","Toi seul nous servons ; Toi seul nous aides à avancer.","Nous nous tournons vers Toi dans l’adoration et dans la demande d’aide.","À Toi seul notre dévotion ; de Toi seul vient le secours que nous sollicitons.","C’est Toi que nous adorons, et c’est Toi dont nous attendons l’aide."],
+6:["Guide-nous sur la voie droite.","Conduis-nous vers le chemin de la rectitude.","Fais-nous suivre la voie juste et équilibrée.","Dirige-nous vers le chemin qui ne dévie pas.","Montre-nous la voie droite et aide-nous à y demeurer.","Mène-nous sur le chemin de la vérité et de la justesse.","Accorde-nous de reconnaître et de suivre la voie droite."],
+7:["La voie de ceux que Tu as comblés de bienfaits, non de ceux qui ont encouru Ta colère, ni des égarés.","Le chemin de ceux que Tu as favorisés, loin de la colère et de l’égarement.","La voie de ceux qui ont reçu Tes bienfaits, pas celle de ceux qui ont provoqué la colère, ni des perdus.","Le chemin de ceux que Tu as gratifiés, à l’écart de la colère et de l’erreur.","La voie de ceux sur qui Tu as répandu Tes grâces, non de ceux qui se sont attiré la colère ou se sont égarés.","Le chemin des bénéficiaires de Tes bienfaits, distinct de celui de la colère et de l’égarement.","La voie de ceux que Tu as guidés par Tes dons, non de ceux qui s’éloignent et se perdent."]
+};
+
+const fatihaStudy = [
+ {match:/بسم/,root:"س م و / س م ي (nom) + ب",grammar:"Bismi : bi- (« par / avec ») suivi de ism (« nom »), dans une construction d’annexion."},
+ {match:/الله/,root:"أ ل ه",grammar:"Allāh : nom propre divin ; sa fonction dans la phrase dépend de la construction qui l’entoure."},
+ {match:/الرحمن/,root:"ر ح م",grammar:"Ar-Raḥmān : nom divin intensif lié à la racine r-ḥ-m ; « miséricorde » est le sens traditionnel, « rayonnement d’amour » est un choix interprétatif de Gloton."},
+ {match:/الرحيم/,root:"ر ح م",grammar:"Ar-Raḥīm : nom divin de la même racine r-ḥ-m ; la nuance exacte par rapport à Ar-Raḥmān fait l’objet d’explications exégétiques."},
+ {match:/الحمد/,root:"ح م د",grammar:"Al-ḥamdu : nom défini désignant la louange et la reconnaissance ; plus large que le simple remerciement."},
+ {match:/رب/,root:"ر ب ب",grammar:"Rabb : seigneur, maître, éducateur et celui qui prend soin ; le contexte précise la nuance."},
+ {match:/العالمين/,root:"ع ل م",grammar:"Al-ʿālamīn : pluriel qui désigne les mondes ou les êtres des mondes ; l’étendue exacte est rendue différemment selon les traductions."},
+ {match:/مالك|ملك/,root:"م ل ك",grammar:"Māliki / Maliki : lecture et vocalisation importantes ; peut être rendu par « Maître » ou « Roi » du Jour du jugement."},
+ {match:/يوم/,root:"ي و م",grammar:"Yawm : jour ; ici, il renvoie au Jour du compte ou de la rétribution selon la traduction."},
+ {match:/الدين/,root:"د ي ن",grammar:"Ad-dīn : peut évoquer la rétribution, le jugement, la dette ou la voie religieuse selon le contexte."},
+ {match:/إياك/,root:"إ ي ا (forme pronominale emphatique)",grammar:"Iyyāka : pronom complément placé avant le verbe pour marquer l’exclusivité : « Toi seul »."},
+ {match:/نعبد/,root:"ع ب د",grammar:"Naʿbudu : verbe à la 1re personne du pluriel, « nous adorons / servons » ; l’adoration est au centre du sens."},
+ {match:/نستعين/,root:"ع و ن",grammar:"Nastaʿīn : forme verbale de demande d’aide ou de soutien : « nous demandons secours »."},
+ {match:/اهدنا/,root:"ه د ي",grammar:"Ihdinā : impératif adressé à Dieu, avec le pronom « nous » : « guide-nous » ; c’est une demande."},
+ {match:/الصراط/,root:"ص ر ط",grammar:"Aṣ-ṣirāṭ : voie ou chemin ; dans cette invocation, la voie demandée est celle de la rectitude."},
+ {match:/المستقيم/,root:"ق و م",grammar:"Al-mustaqīm : participe/adjectif de la famille q-w-m ; droit, stable, sans déviation."},
+ {match:/الذين/,root:"Pronom relatif — pas de racine trilittère ordinaire",grammar:"Alladhīna : « ceux qui », introduit le groupe décrit par la proposition qui suit ; on ne lui attribue pas artificiellement une racine verbale."},
+ {match:/أنعمت/,root:"ن ع م",grammar:"Anʿamta : verbe à la 2e personne du singulier, « Tu as accordé un bienfait » ; l’adresse reste directe."},
+ {match:/غير/,root:"غ ي ر",grammar:"Ghayri : « autre que / non » ; introduit ici une distinction entre deux voies."},
+ {match:/المغضوب/,root:"غ ض ب",grammar:"Al-maghḍūb : forme passive liée à la colère ; le verset ne nomme pas explicitement les personnes visées."},
+ {match:/الضالين/,root:"ض ل ل",grammar:"Aḍ-ḍāllīn : ceux qui s’égarent ou sont dans l’égarement ; ne pas confondre sens lexical et identification exégétique."}
+];
+// V23 — arbre généalogique du sens : forme -> racine/structure -> sens de base -> rendu contextuel.
+// Les racines ne sont affichées comme certaines que lorsqu'une entrée est connue.
+const lexicalRoots = {
+'افلح':'ف ل ح','يفلح':'ف ل ح','المفلحون':'ف ل ح','قبل':'ق ب ل','قبلك':'ق ب ل','بعد':'ب ع د','الله':'ا ل ه','الرحمن':'ر ح م','الرحيم':'ر ح م','رحمن':'ر ح م','رحيم':'ر ح م',
+'الحمد':'ح م د','رب':'ر ب ب','العالمين':'ع ل م','مالك':'م ل ك','ملك':'م ل ك','يوم':'ي و م','الدين':'د ي ن','نعبد':'ع ب د','نستعين':'ع و ن','اهدنا':'ه د ي','الصراط':'ص ر ط','المستقيم':'ق و م',
+
+'الكتاب':'ك ت ب','كتاب':'ك ت ب','هدى':'ه د ي','هدي':'ه د ي','المتقين':'و ق ي','الغيب':'غ ي ب','الدنيا':'د ن و','الاخرة':'ا خ ر','الآخرة':'ا خ ر',
+'يؤمنون':'ا م ن','امنوا':'ا م ن','آمنوا':'ا م ن','يوقنون':'ي ق ن','يعلمون':'ع ل م','قال':'ق و ل','قيل':'ق و ل','قيلت':'ق و ل','قل':'ق و ل','جعل':'ج ع ل','خلق':'خ ل ق','رحمة':'ر ح م','غفور':'غ ف ر','عليم':'ع ل م','سميع':'س م ع','بصير':'ب ص ر','ناس':'ا ن س','ربكم':'ر ب ب','قلوب':'ق ل ب','نور':'ن و ر',
+'الرحمة':'ر ح م','يرحم':'ر ح م','يرحمون':'ر ح م','رحمته':'ر ح م','استغفر':'غ ف ر','يغفر':'غ ف ر','غفر':'غ ف ر','مغفرة':'غ ف ر','التواب':'ت و ب','يتوب':'ت و ب','تاب':'ت و ب','رزق':'ر ز ق','يرزق':'ر ز ق','رزقنا':'ر ز ق','رزقهم':'ر ز ق','الحق':'ح ق ق','حق':'ح ق ق','يحق':'ح ق ق','باطل':'ب ط ل','ظلم':'ظ ل م','ظالمون':'ظ ل م','الظالمين':'ظ ل م','يظلمون':'ظ ل م','عدل':'ع د ل','يقسط':'ق س ط','علم':'ع ل م','العلم':'ع ل م','يعلم':'ع ل م','تعلمون':'ع ل م','تعلم':'ع ل م','جهل':'ج ه ل','حكمة':'ح ك م','حكيم':'ح ك م','حكم':'ح ك م','يحكم':'ح ك م','سمع':'س م ع','يسمع':'س م ع','السمع':'س م ع','بصر':'ب ص ر','يرى':'ر أ ي','رأى':'ر أ ي','نظر':'ن ظ ر','ينظرون':'ن ظ ر','بصره':'ب ص ر','قلب':'ق ل ب','قلوبهم':'ق ل ب','قلبه':'ق ل ب','فؤاد':'ف أ د','صدر':'ص د ر','صدور':'ص د ر','نفس':'ن ف س','أنفس':'ن ف س','روح':'ر و ح','حياة':'ح ي ي','حي':'ح ي ي','يموت':'م و ت','موت':'م و ت','أرض':'أ ر ض','الأرض':'أ ر ض','سماء':'س م و','السماوات':'س م و','ماء':'م و ه','الماء':'م و ه','نار':'ن و ر','النار':'ن و ر','جنة':'ج ن ن','الجنة':'ج ن ن','جنات':'ج ن ن','جهنم':'ج ه ن م','يومئذ':'ي و م','أيام':'ي و م','ليل':'ل ي ل','الليل':'ل ي ل','نهار':'ن ه ر','النهار':'ن ه ر','شمس':'ش م س','الشمس':'ش م س','قمر':'ق م ر','القمر':'ق م ر','نجوم':'ن ج م','نجم':'ن ج م','جبل':'ج ب ل','جبال':'ج ب ل','بحر':'ب ح ر','أنهار':'ن ه ر','نهر':'ن ه ر','شجر':'ش ج ر','ثمار':'ث م ر','ثمر':'ث م ر','زرع':'ز ر ع','أكل':'أ ك ل','يأكلون':'أ ك ل','طعام':'ط ع م','شرب':'ش ر ب','يشربون':'ش ر ب','لباس':'ل ب س','لبس':'ل ب س','بيت':'ب ي ت','بيوت':'ب ي ت','دار':'د و ر','ديار':'د و ر','دخل':'د خ ل','يدخلون':'د خ ل','أخرج':'خ ر ج','خرج':'خ ر ج','يخرجون':'خ ر ج','رجع':'ر ج ع','يرجعون':'ر ج ع','عاد':'ع و د','جاء':'ج ي ء','جاءوا':'ج ي ء','يأتي':'أ ت ي','أتى':'أ ت ي','ذهب':'ذ ه ب','يمشي':'م ش ي','مشى':'م ش ي','اتبع':'ت ب ع','يتبعون':'ت ب ع','تبع':'ت ب ع','هدى':'ه د ي','يهدي':'ه د ي','اهتدى':'ه د ي','ضلال':'ض ل ل','ضل':'ض ل ل','يضل':'ض ل ل','أضل':'ض ل ل','فلاح':'ف ل ح','أفلح':'ف ل ح','يفلح':'ف ل ح','مفلح':'ف ل ح','المفلحون':'ف ل ح','خسر':'خ س ر','خاسرون':'خ س ر','ربح':'ر ب ح','تجارة':'ت ج ر','بيع':'ب ي ع','اشترى':'ش ر ي','مال':'م و ل','أموال':'م و ل','ولد':'و ل د','والد':'و ل د','والدين':'و ل د','أب':'أ ب و','أم':'أ م م','نساء':'ن س و','امرأة':'م ر أ','رجال':'ر ج ل','رجل':'ر ج ل','قوم':'ق و م','أقوام':'ق و م','أمة':'أ م م','أمم':'أ م م','عبد':'ع ب د','عباد':'ع ب د','عبادة':'ع ب د','سجد':'س ج د','يسجدون':'س ج د','ركع':'ر ك ع','صلاة':'ص ل و','صلى':'ص ل و','يصلي':'ص ل و','زكاة':'ز ك و','صوم':'ص و م','صام':'ص و م','حج':'ح ج ج','دعا':'د ع و','يدعو':'د ع و','دعاء':'د ع و','استجاب':'ج و ب','أجاب':'ج و ب','سأل':'س أ ل','يسألون':'س أ ل','قول':'ق و ل','كلام':'ك ل م','تكلم':'ك ل م','نزل':'ن ز ل','أنزل':'ن ز ل','ينزل':'ن ز ل','تنزيل':'ن ز ل','وحي':'و ح ي','كتب':'ك ت ب','يكتب':'ك ت ب','مكتوب':'ك ت ب','قرآن':'ق ر أ','قرأ':'ق ر أ','اقرأ':'ق ر أ','يتلو':'ت ل و','تلا':'ت ل و','آية':'أ ي ي','آيات':'أ ي ي','بين':'ب ي ن','بيّن':'ب ي ن','بيان':'ب ي ن','ظهر':'ظ ه ر','أظهر':'ظ ه ر','بطن':'ب ط ن','خفي':'خ ف ي','خفاء':'خ ف ي','شهد':'ش ه د','يشهد':'ش ه د','شهادة':'ش ه د','كفر':'ك ف ر','كافرون':'ك ف ر','كافرين':'ك ف ر','كذب':'ك ذ ب','كاذبون':'ك ذ ب','صدق':'ص د ق','صادقون':'ص د ق','أمن':'أ م ن','أمان':'أ م ن','إيمان':'أ م ن','كذبوا':'ك ذ ب','صبر':'ص ب ر','اصبر':'ص ب ر','صابرين':'ص ب ر','شكر':'ش ك ر','يشكر':'ش ك ر','شاكرين':'ش ك ر','ذكر':'ذ ك ر','يذكر':'ذ ك ر','اذكر':'ذ ك ر','تذكرة':'ذ ك ر','نسي':'ن س ي','ينسى':'ن س ي','نسيان':'ن س ي','غضب':'غ ض ب','مغضوب':'غ ض ب','رضي':'ر ض ي','يرضى':'ر ض ي','رضوان':'ر ض و','حب':'ح ب ب','يحب':'ح ب ب','محبة':'ح ب ب','كره':'ك ر ه','خوف':'خ و ف','خاف':'خ و ف','يخافون':'خ و ف','أمنوا':'أ م ن','اتقى':'و ق ي','تقوى':'و ق ي','متقون':'و ق ي','متقين':'و ق ي','عمل':'ع م ل','يعملون':'ع م ل','اعملوا':'ع م ل','عاملون':'ع م ل','صالح':'ص ل ح','الصالحات':'ص ل ح','فساد':'ف س د','يفسد':'ف س د','مفسدون':'ف س د','أصلح':'ص ل ح','إصلاح':'ص ل ح','قتل':'ق ت ل','يقتل':'ق ت ل','قاتل':'ق ت ل','قتال':'ق ت ل','نصر':'ن ص ر','ينصر':'ن ص ر','ناصر':'ن ص ر','نصير':'ن ص ر','فتح':'ف ت ح','يفتح':'ف ت ح','فتوح':'ف ت ح','حفظ':'ح ف ظ','يحفظ':'ح ف ظ','حفيظ':'ح ف ظ','سمعنا':'س م ع','أبصر':'ب ص ر','عفو':'ع ف و','عفا':'ع ف و','عذاب':'ع ذ ب','عذب':'ع ذ ب','يعذب':'ع ذ ب','عقاب':'ع ق ب','عاقبة':'ع ق ب','جزاء':'ج ز ي','جزى':'ج ز ي','يجزي':'ج ز ي','أجر':'أ ج ر','أجور':'أ ج ر','ثواب':'ث و ب','رحمن':'ر ح م','رحيم':'ر ح م','كريم':'ك ر م','كرم':'ك ر م','عظيم':'ع ظ م','كبر':'ك ب ر','أكبر':'ك ب ر','تكبير':'ك ب ر','قوي':'ق و ي','قوة':'ق و ي','عزيز':'ع ز ز','عز':'ع ز ز','غني':'غ ن ي','فقير':'ف ق ر','حمد':'ح م د','محمود':'ح م د','سبح':'س ب ح','سبحان':'س ب ح','سبيح':'س ب ح','قدس':'ق د س','بركة':'ب ر ك','بارك':'ب ر ك','أنعم':'ن ع م','نعمة':'ن ع م','نعم':'ن ع م','فضل':'ف ض ل','تفضيل':'ف ض ل','ملك':'م ل ك','مليك':'م ل ك','مالك':'م ل ك','مملكة':'م ل ك','أمر':'أ م ر','يأمر':'أ م ر','أمرهم':'أ م ر','نهى':'ن ه ي','ينهون':'ن ه ي','نهي':'ن ه ي','حل':'ح ل ل','حلال':'ح ل ل','حرم':'ح ر م','حرام':'ح ر م','يحرم':'ح ر م','شرع':'ش ر ع','شريعة':'ش ر ع','دين':'د ي ن','يدين':'د ي ن','جزاء':'ج ز ي','يوم':'ي و م','ساعة':'س و ع','أجل':'أ ج ل','قدر':'ق د ر','قدير':'ق د ر','قدرة':'ق د ر','قضى':'ق ض ي','يقضي':'ق ض ي','قضاء':'ق ض ي','حكم':'ح ك م','حكيم':'ح ك م','حاكم':'ح ك م','عدل':'ع د ل','ميزان':'و ز ن','وزن':'و ز ن','ثقل':'ث ق ل','خف':'خ ف ف','خفيف':'خ ف ف','عسر':'ع س ر','يسر':'ي س ر','يسير':'ي س ر','صعب':'ص ع ب','قرب':'ق ر ب','قريب':'ق ر ب','بعد':'ب ع د','بعيد':'ب ع د','أول':'أ و ل','آخر':'أ خ ر','أخرى':'أ خ ر','أخر':'أ خ ر','وسط':'و س ط','وسطا':'و س ط','بينهم':'ب ي ن','مع':'م ع','عند':'ع ن د','لدى':'ل د ي','فوق':'ف و ق','تحت':'ت ح ت','وراء':'و ر أ','أمام':'أ م م','حول':'ح و ل','حولكم':'ح و ل','طريق':'ط ر ق','سبيل':'س ب ل','سبل':'س ب ل','صراط':'ص ر ط','مستقيم':'ق و م','استقام':'ق و م','قيام':'ق و م','قائم':'ق و م','قوام':'ق و م'
+};
+const normalizedLexicalRoots = Object.fromEntries(Object.entries(lexicalRoots).map(([k,v])=>[normalizeArabicWord(k),v]));
+function lexicalTree(arabic, translit, proposed, verseTranslation, surahId, verseNo, corpusRoot=""){
+ const raw=String(arabic||'');
+ const plain=normalizeArabicWord(raw).replace(/[ۖۗۘۙۚۛۜ۞]/g,'');
+ // On normalise aussi les clés du dictionnaire : أ/إ/آ/ٱ ne doivent pas créer de faux « mots inconnus ».
+ // A fallback lexicon root is shown only for this exact normalized form; no affix stripping or fuzzy match.
+ const lexicalRoot=normalizedLexicalRoots[plain]||'';
+ const root=corpusRoot ? Array.from(String(corpusRoot)).join(' ') : (lexicalRoot && !/pronom relatif|pas une racine/i.test(lexicalRoot) ? lexicalRoot : '');
+ const rootIsCorpus=!!corpusRoot;
+ const prefixes=[]; const suffixes=[];
+ if(/^[و]/.test(plain)) prefixes.push('وَ — et');
+ if(/^[ف]/.test(plain)) prefixes.push('فَ — alors / donc / et, selon le contexte');
+ if(/^[ب]/.test(plain)) prefixes.push('بِـ — par / avec / en');
+ if(/^[ل]/.test(plain)) prefixes.push('لِـ — à / pour / appartient à');
+ if(/^[ك]/.test(plain)) prefixes.push('كَـ — comme / tel que');
+ if(/^ال/.test(plain)) prefixes.push('الـ — article défini « le / la / les »');
+ if(/ك$/.test(plain) && plain.length>2) suffixes.push('ـكَ — « toi / ton », suffixe masculin singulier (à confirmer selon la forme)');
+ else if(/كم$/.test(plain) && plain.length>3) suffixes.push('ـكُم — « vous / votre », suffixe pluriel');
+ else if(/هم$/.test(plain) && plain.length>3) suffixes.push('ـهُم — « eux / leur », suffixe pluriel');
+ else if(/نا$/.test(plain) && plain.length>2) suffixes.push('ـنا — « nous / notre », selon la fonction');
+ const noLexicalRoot=/^(و|ف|ب|ل|ك|من|عن|في|على|إلى|حتى|ثم|أو|أم|لا|ما|لم|لن|إن|أن|إذا|إذ|قد|هل|بل|لكن|هو|هي|هم|هن|أنا|نحن|أنت|أنتم|هذا|هذه|ذلك|تلك|الذي|التي|الذين|اللذين|اللذان|اللتان|اللاتي|اللواتي|من|ما|ماذا|متى|أين|كيف|كم|أي|عليهم|إليهم|فيهم|بهم|لهم|منهم|وهو|وهم|وهي|والذين|فالذين|بالذين)$/.test(plain);
+ const hasRoot=!!root;
+ const structural=prefixes.concat(suffixes).join(' ; ') || 'Forme entière (segmentation automatique limitée)';
+ const contextual=(surahId===2 && verseNo===2 && /^ذلك|^ذٰلك/.test(plain)) ? 'Dans ce verset : « Voici le Livre » ou « C’est le Livre » ; le mot seul renvoie à « cela / celui-là ».':
+   (proposed && !/^Indice lexical source|^Sens français précis à établir|^Sens français à établir/.test(proposed) ? 'Dans la phrase : « '+proposed+' ».' : 'Traduction dans ce verset à vérifier.');
+ const baseIsUseful = plain === 'قيل' || plain === 'قيل' ;
+ const baseNode = baseIsUseful ? `<span class="tree-node"><span class="tree-label">Sens de base</span>${esc(proposed||'« il fut dit »')}</span>` : '';
+ return `<span class="genealogy"><span class="genealogy-title">Du mot au sens</span><span class="tree"><span class="tree-node"><span class="tree-label">Mot</span><strong lang="ar" dir="rtl">${esc(raw)}</strong>${translit?' · '+esc(translit):''}</span><span class="tree-node"><span class="tree-label">Éléments</span>${esc(structural==='Aucun préfixe ou suffixe n’est isolé automatiquement avec assez de certitude.'?'Forme entière':structural)}</span><span class="tree-node"><span class="tree-label">${rootIsCorpus?'Racine · corpus (position exacte)':hasRoot?'Racine · lexique de travail (à vérifier)':'Racine'}</span>${hasRoot?'<strong>'+esc(root)+'</strong>':(noLexicalRoot?'Pas de racine lexicale trilittère indiquée pour cette particule/pronom.':'À vérifier dans le corpus morphologique')}</span>${baseNode}<span class="tree-node"><span class="tree-label">Dans la phrase</span>${esc(contextual)}</span></span></span>`;
+}
+
+function wordStudy(arabic,translit,surahId){
+ if(surahId!==1) return '';
+ const plain=String(arabic||'').replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g,'').replace(/[ٱأإآ]/g,'ا');
+ const found=fatihaStudy.find(x=>x.match.test(plain));
+ if(!found) return '';
+ return `<span class="study-note"><strong>Racine / forme</strong> ${esc(found.root)}<br><strong>Grammaire & nuance</strong> ${esc(found.grammar)}</span>`;
+}
+
+function fatihaPanel(verseNo){
+ if(loadedSurah!==1 || !fatihaLenses[verseNo]) return '';
+ const items=fatihaLenses[verseNo].map((v,i)=>`<div class="lens-item"><b>ÉCLAIRAGE ${i+1}</b><p>${esc(v)}</p></div>`).join('');
+ return `<section class="fatiha-lens"><div class="lens-head"><div><strong>Sept éclairages français</strong><div class="lens-tag">SENS & NUANCES · FĀTIḤA ${verseNo}</div></div><button class="lens-toggle" type="button" aria-expanded="false">Comparer les 7 formulations</button></div><p class="lens-intro">Reformulations originales pour comparer des nuances de sens. Elles ne sont pas sept traductions publiées, ni sept avis savants. Pour une étude religieuse, confrontez-les aux traductions reconnues et aux commentaires.</p><div class="lens-list" hidden>${items}</div></section>`;
+}
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+let allVerses=[], loadedSurah=0;
+let morphologyByVerse={}, morphologyLoadedSurah=0;
+async function loadMorphologyForSurah(id){
+ try{
+  const response=await fetch(`https://raw.githubusercontent.com/R3GENESI5/quran-bil-quran/master/app/data/surahs/${id}.json`);
+  if(!response.ok) return false;
+  const rows=await response.json();
+  if(!Array.isArray(rows)) return false;
+  const mapped={};
+  for(const verse of rows){
+   if(!verse || !verse.k || !Array.isArray(verse.words)) continue;
+   mapped[verse.k]=verse.words.map(w=>({text:w.t||"",root:w.r||""}));
+  }
+  if(loadedSurah!==id) return false;
+  morphologyByVerse=mapped; morphologyLoadedSurah=id;
+  return true;
+ }catch(e){ return false; }
+}
+function corpusRootForWord(surahId, verseNo, arabic, wordIndex){
+ if(morphologyLoadedSurah!==surahId) return "";
+ const row=morphologyByVerse[`${surahId}:${verseNo}`];
+ if(!row) return "";
+ const target=normalizeArabicWord(arabic);
+ const exactPosition=row[wordIndex];
+ // No nearby-token fallback: morphology is shown only when index and normalized word both match.
+ return exactPosition && normalizeArabicWord(exactPosition.text)===target ? exactPosition.root : "";
+}surahs.forEach((s,i)=>{const o=document.createElement("option");o.value=i+1;o.textContent=`${i+1}. ${s[0]} — ${s[2]} versets`;$("surah").appendChild(o)});
+let surahLoadSequence=0;
+async function fetchCompleteSurah(id, expectedCount, sequence){
+ const perPage=50, verses=[];
+ const translationId=31;
+ let totalPages=null,totalRecords=null,page=1;
+ while(page!==null){
+  if(sequence!==surahLoadSequence) throw new Error("Chargement remplacé par une demande plus récente.");
+  if(page>Math.ceil(expectedCount/perPage)) throw new Error("La pagination dépasse le nombre de pages attendu.");
+  const url=`https://api.quran.com/api/v4/verses/by_chapter/${id}?words=true&word_fields=text_uthmani,translation,transliteration&translations=${translationId}&translation_fields=resource_name,verse_key,verse_number,id&language=fr&per_page=${perPage}&page=${page}`;
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),20000);
+  let res;
+  try{res=await fetch(url,{signal:controller.signal});}finally{clearTimeout(timeout);}
+  if(!res.ok) throw new Error(`Le serveur de texte a répondu ${res.status} (page ${page}).`);
+  const data=await res.json();
+  if(!Array.isArray(data.verses)||!data.pagination) throw new Error(`Réponse mal formée à la page ${page}.`);
+  const meta=data.pagination;
+  if(meta.current_page!==page || meta.per_page!==perPage || !Number.isInteger(meta.total_pages) || meta.total_pages<1 || !Number.isInteger(meta.total_records)) throw new Error(`Métadonnées de pagination incohérentes à la page ${page}.`);
+  if(totalPages===null){totalPages=meta.total_pages;totalRecords=meta.total_records;}
+  else if(meta.total_pages!==totalPages || meta.total_records!==totalRecords) throw new Error("Le total a changé pendant le chargement.");
+  if(totalRecords!==expectedCount || totalPages!==Math.ceil(expectedCount/perPage)) throw new Error(`Le serveur annonce ${totalRecords} versets; ${expectedCount} sont attendus.`);
+  const expectedNext=page<totalPages?page+1:null;
+  if((meta.next_page??null)!==expectedNext) throw new Error(`Suite de pagination incohérente après la page ${page}.`);
+  if(data.verses.length===0) throw new Error(`La page ${page} ne contient aucun verset.`);
+  verses.push(...data.verses);
+  page=meta.next_page??null;
+ }
+ if(verses.length!==expectedCount) throw new Error(`Chargement incomplet : ${verses.length} versets reçus sur ${expectedCount}.`);
+ const verseNumbers=new Set(),verseIds=new Set();
+ verses.forEach((verse,index)=>{
+  const expected=index+1;
+  if(!verse||verse.verse_number!==expected||verse.verse_key!==`${id}:${expected}`||verseNumbers.has(verse.verse_number)) throw new Error(`Séquence ou clé de verset invalide à la position ${expected}.`);
+  if(!Number.isInteger(verse.id)||verseIds.has(verse.id)) throw new Error(`Identifiant de verset absent ou dupliqué à la position ${expected}.`);
+  if(!Array.isArray(verse.words)||verse.words.length===0||verse.words.some(word=>!word||!(word.text_uthmani||word.text))) throw new Error(`Données de mots absentes ou mal formées au verset ${expected}.`);
+  const translations=(verse.translations||[]).filter(item=>item.resource_id===translationId);
+  if(translations.length!==1||translations[0].verse_key!==`${id}:${expected}`||translations[0].verse_number!==expected||typeof translations[0].text!=="string"||!translations[0].text.trim()) throw new Error(`Traduction française absente ou mal référencée au verset ${expected}.`);
+  verseNumbers.add(verse.verse_number);verseIds.add(verse.id);
+ });
+ return verses;
+}async function loadSurah(id, targetVerse=1){
+ const sequence=++surahLoadSequence;
+ morphologyByVerse={};morphologyLoadedSurah=0;
+ $("error").hidden=true;$("verses").innerHTML='<div class="loading">Chargement et vérification de tous les versets…</div>';
+ const s=surahs[id-1];if(!s)return;
+ $("surahTitle").textContent=`${s[1]} — ${s[0]}`;$("status").textContent=`Sourate ${id} sur 114 · vérification du chargement…`;
+ $("jump").innerHTML="";for(let n=1;n<=s[2];n++){const o=document.createElement("option");o.value=n;o.textContent=`Verset ${n}`;$("jump").appendChild(o)}$("jump").value=String(targetVerse);
+ try{
+  const verses=await fetchCompleteSurah(id,s[2],sequence);
+  if(sequence!==surahLoadSequence)return;
+  allVerses=verses;loadedSurah=id;renderVerses(targetVerse);
+  $("status").textContent=`Sourate ${id} sur 114 · ${verses.length}/${s[2]} versets chargés et séquencés. Les données mot à mot peuvent varier en qualité.`;
+  loadMorphologyForSurah(id).then(ok=>{
+   if(ok && loadedSurah===id && sequence===surahLoadSequence){
+    renderVerses(targetVerse);
+    $("status").textContent=`Sourate ${id} sur 114 · ${allVerses.length}/${s[2]} versets chargés · données du corpus morphologique disponibles.`;
+   }
+  });
+ }catch(e){
+  if(sequence!==surahLoadSequence)return;
+  allVerses=[];$("verses").innerHTML="";$("error").hidden=false;
+  $("error").innerHTML=`Impossible de confirmer le chargement complet des versets. Vérifie la connexion Internet puis appuie sur « Réessayer ». <br><br><button id="retry">Réessayer</button>`;
+  $("retry").onclick=()=>loadSurah(id,targetVerse);
+  $("status").textContent=`Chargement interrompu : ${esc(e.message||"erreur réseau")}. Aucun verset partiel n’est affiché.`;
+ }
+}
+function tajwidClusters(ar){
+ // Segmente chaque lettre arabe avec ses signes combinatoires pour colorer la lettre exacte.
+ const chars=Array.from(String(ar||'')); const clusters=[];
+ for(const ch of chars){
+  if(/[\u064B-\u065F\u0670\u06D6-\u06ED\u08D3-\u08FF]/u.test(ch) && clusters.length) clusters[clusters.length-1]+=ch;
+  else clusters.push(ch);
+ }
+ return clusters;
+}
+const SUN_LETTERS=new Set(Array.from('تثدذرزسشصضطظلن'));
+const QALQALAH_LETTERS=new Set(Array.from('قطبجد'));
+const IKHFA_LETTERS=new Set(Array.from('تثجددذزسشصضطظفقك'));
+function tajwidDecorated(ar, prevAr='', isFirst=true){
+ const c=tajwidClusters(ar); const prev=String(prevAr||''); const norm=x=>String(x||'').replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/gu,'');
+ const classes=c.map(()=>new Set());
+ // Hamzat al-wasl is skipped only when joining from a previous word; at a fresh start it is pronounced.
+ const firstBase=norm(c[0]).replace(/[َُِّْٰٓۖۗۘۙۚۛۜ۞]/g,'');
+ if(!isFirst && (firstBase==='ٱ'||firstBase==='اٱ')) classes[0].add('tj-wasl-silent');
+ // Lam shamsiyyah: the lam of the definite article is assimilated before a sun letter.
+ if(c.length>=3 && (firstBase==='ٱ'||firstBase==='ا') && norm(c[1]).replace(/[َُِّْٰٓۖۗۘۙۚۛۜ۞]/g,'')==='ل' && SUN_LETTERS.has(norm(c[2]).replace(/[َُِّْٰٓۖۗۘۙۚۛۜ۞]/g,''))) classes[1].add('tj-silent');
+ // Long-vowel clues. Highlight the madd letter (or the dagger-alif carrier) rather than the entire word.
+ for(let i=0;i<c.length;i++){
+  const base=norm(c[i]);
+  const baseLetter=base.replace(/[َُِّْٰٓۖۗۘۙۚۛۜ۞]/g,'');
+  if(base.includes('ٰ') || base.includes('ٓ') || (baseLetter==='ا' && i>0 && /َ/.test(c[i-1])) || (baseLetter==='ى' && i>0 && /َ/.test(c[i-1])) || (baseLetter==='ي' && i>0 && /ِ/.test(c[i-1])) || (baseLetter==='و' && i>0 && /ُ/.test(c[i-1]))) classes[i].add('tj-madd');
+  if((base==='نّ'||base==='مّ') || (/[نم]/u.test(base) && /ّ/u.test(c[i]))) classes[i].add('tj-ghunna');
+  const letter=base.replace(/[َُِّْٰٓۖۗۘۙۚۛۜ۞]/g,'');
+  if(QALQALAH_LETTERS.has(letter) && /[ْۡ]/u.test(c[i])) classes[i].add('tj-qalqalah');
+ }
+ // Contextual nūn sākinah/tanwīn before bāʾ: iqlāb; before ikhfāʾ letters: possible ikhfa.
+ const prevNorm=norm(prev).replace(/\s/g,'');
+ const startsB=(c.length && norm(c[0]).replace(/[َُِّْ]/g,'')==='ب');
+ const prevHasNunSakin=/نْ|ً|ٍ|ٌ/.test(prev);
+ if(startsB && prevHasNunSakin){ classes[0].add('tj-iqlab'); }
+ else if(c.length && prevHasNunSakin && IKHFA_LETTERS.has(norm(c[0]).replace(/[َُِّْ]/g,''))){classes[0].add('tj-ikhfa');}
+ return c.map((cluster,i)=>{
+  const cls=[...classes[i]];
+  return cls.length?`<span class="tj-char ${cls.join(' ')}">${esc(cluster)}</span>`:esc(cluster);
+ }).join('');
+}
+function tajwidClass(ar){return '';}
+function applyTajwidClasses(){ /* Le repérage est produit lettre par lettre au rendu du verset. */ }
+function renderVerses(from=1){
+ const wanted=allVerses.filter(v=>v.verse_number>=from);
+ $("verses").innerHTML=wanted.map(v=>{
+  const verseTranslation=(v.translations||[]).find(item=>item.resource_id===31&&item.verse_key===`${loadedSurah}:${v.verse_number}`);
+  const trans=verseTranslation?.text||"";
+  const cleanTrans=String(trans).replace(/<[^>]*>/g," ").replace(/&nbsp;/g," ").replace(/\s+/g," ").trim();
+  const apiWords=(v.words||[]).filter(w=>w.char_type_name!=="end");
+  const words=apiWords.map((w,wordIndex)=>{
+   const ar=w.text_uthmani||w.text||"";if(!ar)return "";
+   const prevAr=wordIndex>0?(apiWords[wordIndex-1].text_uthmani||apiWords[wordIndex-1].text||""):"";
+   const tajwidHtml=tajwidDecorated(ar,prevAr,wordIndex===0);
+   const corpusRoot=corpusRootForWord(loadedSurah,v.verse_number,ar,wordIndex);
+   const rawMean=w.translation?.text||w.translation?.name||"";
+   const translit=w.transliteration?.text||"";
+   const wordMean=frenchGloss(rawMean, ar, translit, loadedSurah, v.verse_number);
+   const review=lexicalReviewStatus(rawMean, ar, translit, loadedSurah, v.verse_number);
+   const html=`<span class="word" tabindex="0" role="button" aria-expanded="false" aria-label="Afficher le sens de ${esc(ar)}">${tajwidHtml}<span class="pop"><b>${esc(ar)}${translit?" · "+esc(translit):""}</b><span class="review-status review-${review.level}">${esc(review.label)}</span>${lexicalTree(ar,translit,wordMean,cleanTrans,loadedSurah,v.verse_number,corpusRoot)}${targetedLexicalNote(ar,loadedSurah,v.verse_number)?`<span class="study-note"><strong>Forme & nuance</strong> ${esc(targetedLexicalNote(ar,loadedSurah,v.verse_number))}</span>`:""}${wordStudy(ar,translit,loadedSurah)}<span class="context">Dans le verset : ${esc(cleanTrans)}</span></span></span>`;
+   return html;
+  }).join(" ");
+  return `<article class="ayah" id="ayah-${v.verse_number}"><div class="ayahnum">۞ ${v.verse_number} ۞</div><div class="ar" lang="ar" dir="rtl">${words}</div><div class="verse-translation" lang="fr"><span class="verse-translation-label">Traduction française de Muhammad Hamidullah (ressource Quran.com 31) · Données du Coran fournies par Quran Foundation</span><p>${esc(cleanTrans||"Traduction française indisponible pour ce verset.")}</p></div>${fatihaPanel(v.verse_number)}</article>`;
+ }).join("");
+ $("verses").querySelectorAll(".word").forEach(el=>{
+  const toggle=()=>{const was=el.classList.contains("active");document.querySelectorAll(".word.active").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-expanded","false")});if(!was){el.classList.add("active");el.setAttribute("aria-expanded","true")}};
+  el.addEventListener("click",e=>{e.stopPropagation();toggle()});
+  el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle()}});
+ });
+ document.querySelectorAll(".lens-toggle").forEach(btn=>btn.addEventListener("click",()=>{const list=btn.closest(".fatiha-lens").querySelector(".lens-list");const opening=list.hidden;list.hidden=!opening;btn.setAttribute("aria-expanded",String(opening));btn.textContent=opening?"Masquer les formulations":"Comparer les 7 formulations"}));
+ const first=$("ayah-"+from);if(first)first.scrollIntoView({block:"start"});
+}
+$("surah").addEventListener("change",()=>{localStorage.setItem("quran-surah",$("surah").value);loadSurah(Number($("surah").value),1)});
+$("jump").addEventListener("change",()=>{const n=Number($("jump").value);renderVerses(n);const el=$("ayah-"+n);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})});
+document.addEventListener("click",()=>document.querySelectorAll(".word.active").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-expanded","false")}));
+$("tajwidToggle").addEventListener("change",()=>{
+ document.body.classList.toggle("tajwid-on",$("tajwidToggle").checked);
+ applyTajwidClasses();
+});
+$("surah").value=localStorage.getItem("quran-surah")||"1";loadSurah(Number($("surah").value),1);
+</script></body></html>
